@@ -647,8 +647,19 @@ function renderPredictions(preds) {
 }
 
 function usePrediction(el) {
-  document.getElementById('searchInput').value = el.dataset.val;
-  hidePredictions(); doSearch();
+  const val = el.dataset.val;
+  document.getElementById('searchInput').value = val;
+  hidePredictions();
+
+  const exactMatch = allBooks.filter(b => b.title === val);
+  if (exactMatch.length === 1) {
+    document.getElementById('aiBox').classList.add('hidden');
+    renderBooks(exactMatch);
+    updateStats(1, allBooks.length);
+    return;
+  }
+
+  doSearch();
 }
 
 function hidePredictions() {
