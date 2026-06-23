@@ -2,30 +2,14 @@ using BookSearchApp.Models;
 
 namespace BookSearchApp.Services;
 
-// [مقابلة] Service Class — منطق الأعمال (Business Logic) منفصل عن الـ API
-// مسجّل كـ Singleton في DI: كائن واحد يُشارَك بين كل الـ requests
-
-
-
-
-
-
-
 public class SmartSearchEngine
 {
-    // [مقابلة] Lock (System.Threading.Lock في .NET 9+) — يمنع الـ race conditions
-    // أفضل من lock(object) التقليدي: أكثر وضوحاً وأداءً
     private readonly Lock _modelLock = new();
 
-    // [مقابلة] volatile — يضمن أن كل thread يرى القيمة الأحدث من الذاكرة الرئيسية
-    // IReadOnlyDictionary/List: Immutable بعد البناء، لا يحتاج lock للقراءة
-    // الـ reference assignment في C# على 64-bit CLR عملية atomic (لا تنقسم)
     private volatile IReadOnlyDictionary<string, IReadOnlyDictionary<string, int>> _bigrams
         = new Dictionary<string, IReadOnlyDictionary<string, int>>();
     private volatile IReadOnlyList<string> _allWords = [];
 
-    // [مقابلة] static readonly — يُنشأ مرة واحدة عند تحميل الـ class، لا يتغير
-    // Dictionary<string, string[]>: مفتاح = التصنيف، قيمة = قائمة عناوين الكتب
     private static readonly Dictionary<string, string[]> _categories = new()
     {
         ["علوم"] = new[] { "أسرار جزيء الماء: المعجزة الحيوية", "دورة المياه في الطبيعة", "الماء والصحة: دليل الترطيب المثالي" },
@@ -35,8 +19,6 @@ public class SmartSearchEngine
         ["اقتصاد"] = new[] { "اقتصاديات المياه وسعر اللتر", "حروب المياه: الصراع القادم" }
     };
 
-    // [مقابلة] Intent Detection — نحلل نية المستخدم من الكلمات المفتاحية
-    // مثل: "أقدم" → intent = oldest، "اقترح" → intent = recommend
     private static readonly Dictionary<string, string[]> _intentKeywords = new()
     {
         ["author"] = new[] { "مؤلف", "كاتب", "كتّاب", "من كتب", "ألف", "لمن" },
@@ -49,20 +31,16 @@ public class SmartSearchEngine
         ["all"] = new[] { "كل", "جميع", "اعرض", "كلها" }
     };
 
-    // [مقابلة] يُشغَّل مرة واحدة عند بدء التطبيق لبناء نموذج N-gram من بيانات قاعدة البيانات
     public void BuildModel(List<Book> books)
     {
-        // نبني الـ dictionaries محلياً (بدون lock) لتحسين الأداء
-        // لا خطر هنا لأن القراءة والكتابة لا تتزامنان في هذه المرحلة
         var localBigrams = new Dictionary<string, Dictionary<string, int>>();
-        var wordSet      = new HashSet<string>();  // HashSet يمنع التكرار تلقائياً
+        var wordSet      = new HashSet<string>();
 
         foreach (var book in books)
         {
             var titleWords  = Tokenize(book.Title);
             var authorWords = Tokenize(book.Author);
 
-            // [مقابلة] N-gram (Bigram) — نبني علاقات "كلمة → الكلمة التي تليها"
             AddNGrams(titleWords,  localBigrams);
             AddNGrams(authorWords, localBigrams);
 
@@ -70,9 +48,6 @@ public class SmartSearchEngine
             foreach (var w in authorWords) wordSet.Add(w);
         }
 
-        // [مقابلة] Publish immutable snapshot داخل lock
-        // القراء خارج الـ lock يرون إما النسخة القديمة أو الجديدة كاملة، أبداً ليست ناقصة
-        // هذا النمط يُسمى "Copy-on-write" أو "Immutable snapshot"
         lock (_modelLock)
         {
             _bigrams  = localBigrams.ToDictionary(
@@ -82,15 +57,11 @@ public class SmartSearchEngine
         }
     }
 
-    // [مقابلة] Tokenization — تقسيم النص إلى كلمات منفصلة
-    // RemoveEmptyEntries: يتجاهل الفراغات المتعددة المتتالية
     private string[] Tokenize(string text)
     {
         return text.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
     }
 
-    // [مقابلة] Bigram Model — لكل كلمة نحفظ قائمة الكلمات التي تأتي بعدها مع عدد مرات تكرارها
-    // مثال: "تحلية" → { "المياه": 3, "الماء": 1 } تعني أن "المياه" جاءت بعد "تحلية" 3 مرات
     private static void AddNGrams(string[] words, Dictionary<string, Dictionary<string, int>> bigrams)
     {
         for (int i = 0; i < words.Length - 1; i++)
@@ -98,7 +69,6 @@ public class SmartSearchEngine
             var current = words[i];
             var next    = words[i + 1];
 
-            // [مقابلة] TryGetValue — أكفأ من ContainsKey + الوصول المباشر (عملية واحدة بدل اثنتين)
             if (!bigrams.TryGetValue(current, out var followers))
                 bigrams[current] = followers = [];
 
@@ -106,9 +76,6 @@ public class SmartSearchEngine
         }
     }
 
-    /// <summary>
-    /// تنبؤ الكلمات التالية بناءً على آخر كلمة مكتوبة
-    /// </summary>
     public List<string> PredictNextWords(string input, List<Book> books, int maxResults = 5)
     {
         if (string.IsNullOrWhiteSpace(input)) return new List<string>();
@@ -117,7 +84,6 @@ public class SmartSearchEngine
         var lastWord = words.Last().ToLower();
         var predictions = new List<string>();
 
-        // 1. Bigram predictions — predict next word based on current word
         if (_bigrams.ContainsKey(words.Last()))
         {
             predictions.AddRange(
@@ -128,20 +94,17 @@ public class SmartSearchEngine
             );
         }
 
-        // 2. Title/Author completion — match partial words
         var titleMatches = books
             .Where(b => b.Title.ToLower().Contains(lastWord) || b.Author.ToLower().Contains(lastWord))
             .Select(b => b.Title)
             .Take(maxResults)
             .ToList();
 
-        // 3. Word completion from vocabulary
         var wordCompletions = _allWords
             .Where(w => w.ToLower().StartsWith(lastWord) && w.ToLower() != lastWord)
             .Take(maxResults)
             .ToList();
 
-        // Combine and deduplicate
         var combined = new List<string>();
         combined.AddRange(titleMatches);
         combined.AddRange(predictions.Select(p => input.Trim() + " " + p));
@@ -150,9 +113,6 @@ public class SmartSearchEngine
         return combined.Distinct().Take(maxResults).ToList();
     }
 
-    /// <summary>
-    /// البحث الذكي الشامل — يحلل النية ويرجع نتائج + رد ذكي
-    /// </summary>
     public SmartSearchResult SmartSearch(string query, List<Book> books)
     {
         if (string.IsNullOrWhiteSpace(query))
@@ -229,13 +189,11 @@ public class SmartSearchEngine
                 break;
 
             default:
-                // 1. Try exact phrase match first
                 results = books.Where(b =>
                     b.Title.ToLower().Contains(q) ||
                     b.Author.ToLower().Contains(q)
                 ).ToList();
 
-                // 2. If no results, try matching ALL meaningful words (AND logic)
                 if (!results.Any())
                 {
                     var meaningfulWords = q.Split(' ')
@@ -249,7 +207,6 @@ public class SmartSearchEngine
                                 b.Author.ToLower().Contains(word))
                         ).ToList();
 
-                        // 3. If still no results, try ANY word match as last resort
                         if (!results.Any())
                         {
                             results = books.Where(b =>
@@ -308,7 +265,6 @@ public class SmartSearchEngine
 
     private List<Book> SearchByAuthorIntent(string query, List<Book> books)
     {
-        // Remove intent keywords to get the author name
         var authorQuery = query;
         foreach (var kw in _intentKeywords["author"])
             authorQuery = authorQuery.Replace(kw, "").Trim();
@@ -345,7 +301,6 @@ public class SmartSearchEngine
 
     private string GetBookInsight(Book book)
     {
-        // Provide interesting context about the book
         var insights = new Dictionary<string, string>
         {
             ["أسرار جزيء الماء: المعجزة الحيوية"] = "يشرح كيف يتفرد الماء بخصائص كيميائية فريدة جعلت منه أساس وجود الحياة على الأرض.",
@@ -400,9 +355,6 @@ public class SmartSearchEngine
     }
 }
 
-/// <summary>
-/// نموذج نتيجة البحث الذكي
-/// </summary>
 public class SmartSearchResult
 {
     public string AiResponse { get; set; } = string.Empty;

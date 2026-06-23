@@ -4,16 +4,12 @@ using BookSearchApp.Data;
 using BookSearchApp.Models;
 using BookSearchApp.Services;
 
-// ── Services ──────────────────────────────────────────────────────────────────
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Railway provides DATABASE_URL automatically when PostgreSQL plugin is added
 var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 string connectionString;
 if (!string.IsNullOrWhiteSpace(databaseUrl))
 {
-    // Convert postgres://user:pass@host:port/db to Npgsql format
     var uri = new Uri(databaseUrl);
     var userInfo = uri.UserInfo.Split(':');
     connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
@@ -69,8 +65,6 @@ using (var scope = app.Services.CreateScope())
     {
         db.Database.Migrate();
 
-        // Migration was generated for SQLite (no SERIAL), so we add the sequence manually.
-        // Without this, PostgreSQL has no auto-increment on the Id column.
         db.Database.ExecuteSqlRaw(@"
             DO $$
             BEGIN
@@ -84,7 +78,6 @@ using (var scope = app.Services.CreateScope())
 
         db.Database.ExecuteSqlRaw(@"ALTER TABLE ""Books"" ADD COLUMN IF NOT EXISTS ""PdfUrl"" text");
 
-        // Same sequence fix for the Users table.
         db.Database.ExecuteSqlRaw(@"
             DO $$
             BEGIN
@@ -117,7 +110,6 @@ using (var scope = app.Services.CreateScope())
     {
         db.Database.EnsureCreated();
 
-        // Backfill PdfUrl column for existing SQLite databases that predate the column.
         using var checkCol = sqliteConn!.CreateCommand();
         checkCol.CommandText = "SELECT COUNT(*) FROM pragma_table_info('Books') WHERE name = 'PdfUrl'";
         if ((long)checkCol.ExecuteScalar()! == 0)
@@ -172,11 +164,9 @@ app.Use(async (ctx, next) =>
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// ── Activity Logger Middleware ────────────────────────────────────────────────
 app.Use(async (ctx, next) =>
 {
     await next();
-    // Only log GET requests for HTML pages (not API/static files)
     if (ctx.Request.Method == "GET"
         && ctx.Response.StatusCode == 200
         && !ctx.Request.Path.StartsWithSegments("/api")
@@ -203,7 +193,6 @@ app.Use(async (ctx, next) =>
     }
 });
 
-// ── Rate Limiter (Brute Force protection) ────────────────────────────────────
 var loginAttempts = new System.Collections.Concurrent.ConcurrentDictionary<string, (int count, DateTime reset)>();
 
 bool IsRateLimited(string ip)
@@ -215,8 +204,6 @@ bool IsRateLimited(string ip)
     loginAttempts[ip] = entry;
     return entry.count > 10;
 }
-
-// ── Endpoints ─────────────────────────────────────────────────────────────────
 
 app.MapPost("/api/auth/login", async (LoginRequest req, AppDbContext db, IConfiguration config, HttpContext http) =>
 {
@@ -304,7 +291,6 @@ app.MapPost("/api/auth/user-login", async (LoginRequest req, AppDbContext db, Ht
     }
 
     user.Token = GenerateToken();
-    // Upgrade legacy SHA-256 hash to bcrypt on successful login
     if (!user.PasswordHash.StartsWith("$2"))
         user.PasswordHash = HashPassword(req.Password);
     try { db.ActivityLogs.Add(new ActivityLog { Type="login", Username=user.Username, Email=user.Email, IpAddress=ip[..Math.Min(ip.Length,50)], UserAgent=ua[..Math.Min(ua.Length,500)], CreatedAt=DateTime.UtcNow }); await db.SaveChangesAsync(); } catch { }
@@ -388,8 +374,6 @@ app.MapDelete("/api/books/{id:int}", async (int id, AppDbContext db) =>
     return Results.Ok(new { message = $"Deleted '{book.Title}'." });
 }).RequireApiKey(app.Configuration);
 
-// ── Admin Panel Endpoints ─────────────────────────────────────────────────────
-
 app.MapGet("/api/admin/stats", async (AppDbContext db) =>
 {
     var books = await db.Books.CountAsync();
@@ -409,10 +393,9 @@ app.MapGet("/api/admin/users", async (AppDbContext db) =>
 
 app.MapGet("/api/admin/analytics", async (AppDbContext db) =>
 {
-    var now = DateTime.UtcNow.AddHours(3); // Saudi time (UTC+3)
+    var now = DateTime.UtcNow.AddHours(3);
     var from14 = now.AddDays(-13).Date;
 
-    // Activity per day (last 14 days)
     var logs14 = await db.ActivityLogs
         .Where(a => a.CreatedAt >= from14)
         .ToListAsync();
@@ -426,7 +409,6 @@ app.MapGet("/api/admin/analytics", async (AppDbContext db) =>
     var dailyRegs     = days.Select(d => logs14.Count(a => a.CreatedAt.AddHours(3).Date == d && a.Type == "register")).ToList();
     var labels        = days.Select(d => d.ToString("MM/dd")).ToList();
 
-    // Type breakdown (all time)
     var allLogs = await db.ActivityLogs.ToListAsync();
     var breakdown = new {
         visits   = allLogs.Count(a => a.Type == "visit"),
@@ -436,7 +418,6 @@ app.MapGet("/api/admin/analytics", async (AppDbContext db) =>
         admins   = allLogs.Count(a => a.Type == "admin_login"),
     };
 
-    // Browser distribution
     var browsers = allLogs
         .Where(a => a.UserAgent != null)
         .GroupBy(a =>
@@ -449,7 +430,6 @@ app.MapGet("/api/admin/analytics", async (AppDbContext db) =>
         .OrderByDescending(g => g.count)
         .ToList();
 
-    // Total stats
     var totalVisits = allLogs.Count(a => a.Type == "visit");
     var todayVisits = allLogs.Count(a => a.CreatedAt.AddHours(3).Date == now.Date);
     var totalUsers  = await db.Users.CountAsync();
@@ -478,7 +458,6 @@ app.MapGet("/api/admin/activity", async (AppDbContext db, int limit = 200) =>
 
 app.MapGet("/admin/users", async (HttpContext http, AppDbContext db, IConfiguration config) =>
 {
-    // Accept key from header only (not URL query — avoids logging in server logs)
     var key = http.Request.Headers["X-Api-Key"].ToString();
     if (!string.Equals(key, config["ApiKey"], StringComparison.Ordinal))
     {
@@ -541,9 +520,6 @@ app.Lifetime.ApplicationStopped.Register(() => sqliteConn?.Dispose());
 
 app.Run();
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-// bcrypt (work factor 12) for new hashes; SHA-256 kept only for migration
 static string HashPassword(string password)
     => BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
 
@@ -551,7 +527,6 @@ static bool VerifyPassword(string password, string hash)
 {
     if (hash.StartsWith("$2"))
         return BCrypt.Net.BCrypt.Verify(password, hash);
-    // legacy SHA-256 path
     using var sha = System.Security.Cryptography.SHA256.Create();
     var legacy = Convert.ToHexString(sha.ComputeHash(
         System.Text.Encoding.UTF8.GetBytes(password + "_مكتبة_المياه_2026")
