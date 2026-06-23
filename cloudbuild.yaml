@@ -1,0 +1,42 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:$BUILD_ID'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:latest'
+      - '.'
+    dir: 'BookSearchApp'
+
+  # Step 2: Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:$BUILD_ID'
+
+  # Step 3: Deploy to Cloud Run
+  # ملاحظة أمان: لا توجد أي كلمة سر هنا. سلسلة الاتصال ومفتاح الـ API
+  # يأتيان من Secret Manager (يجب إنشاؤهما مسبقاً مرة واحدة عبر deploy.sh):
+  #   book-search-db-connection  -> ConnectionStrings__DefaultConnection
+  #   book-search-api-key        -> ApiKey
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'book-search'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:$BUILD_ID'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--add-cloudsql-instances=$PROJECT_ID:us-central1:books-db'
+      - '--set-env-vars=UseGoogleCloudSQL=true'
+      - '--set-secrets=ConnectionStrings__DefaultConnection=book-search-db-connection:latest,ApiKey=book-search-api-key:latest'
+
+images:
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:$BUILD_ID'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/book-search/book-search:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

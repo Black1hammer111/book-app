@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة تحكم المدير — مكتبة المياه</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 80'%3E%3Cdefs%3E%3ClinearGradient id='fg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300C8E8'/%3E%3Cstop offset='100%25' stop-color='%230077B6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 2C32 2 4 34 4 52C4 67.5 16.5 80 32 80C47.5 80 60 67.5 60 52C60 34 32 2 32 2Z' fill='url(%23fg)'/%3E%3Cpath d='M44 52C44 58.6 38.6 64 32 64' stroke='white' stroke-width='5' stroke-linecap='round' fill='none' opacity='0.5'/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23003B5C'/%3E%3Cdefs%3E%3ClinearGradient id='ag' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300C8E8'/%3E%3Cstop offset='100%25' stop-color='%230077B6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M90 15C90 15 28 87 28 127C28 156 56.6 180 90 180C123.4 180 152 156 152 127C152 87 90 15 90 15Z' fill='url(%23ag)'/%3E%3Cpath d='M122 127C122 143.6 107.7 157 90 157' stroke='white' stroke-width='12' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=2" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ═══ شاشة تسجيل الدخول ═══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="rgba(0,150,199,.15)"/><path d="M20 8c0 0-9 7-9 14a9 9 0 0018 0c0-7-9-14-9-14z" fill="#0096C7"/></svg>
+    </div>
+    <h1 class="login-title">لوحة تحكم المدير</h1>
+    <p class="login-sub">مكتبة المياه</p>
+    <div class="login-form">
+      <div class="lf-group">
+        <label>اسم المستخدم</label>
+        <input id="liUser" type="text" placeholder="omar" autocapitalize="none" autocorrect="off" spellcheck="false" />
+      </div>
+      <div class="lf-group">
+        <label>كلمة المرور</label>
+        <input id="liPass" type="password" placeholder="••••••••••" />
+      </div>
+      <div id="liErr" class="li-err hidden"></div>
+      <button id="liBtn" onclick="doLogin()">دخول</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ لوحة التحكم ═══ -->
+<div id="dashboard" class="hidden">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sb-brand">
+      <svg viewBox="0 0 32 32" fill="none" width="28"><circle cx="16" cy="16" r="16" fill="rgba(0,150,199,.2)"/><path d="M16 5c0 0-8 6-8 11a8 8 0 0016 0c0-5-8-11-8-11z" fill="#0096C7"/></svg>
+      <span>مكتبة المياه</span>
+    </div>
+    <nav class="sb-nav">
+      <a class="sb-link active" data-page="stats" onclick="goPage('stats')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        لوحة المعلومات
+      </a>
+      <a class="sb-link" data-page="books" onclick="goPage('books')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        إدارة الكتب
+      </a>
+      <a class="sb-link" data-page="users" onclick="goPage('users')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        إدارة المستخدمين
+      </a>
+      <a class="sb-link" data-page="activity" onclick="goPage('activity')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        سجل النشاط
+      </a>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-admin-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span id="sbAdminName">admin</span>
+      </div>
+      <button class="sb-logout" onclick="doLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        خروج
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+
+    <!-- ── صفحة: الإحصائيات ── -->
+    <div id="pageStats" class="page">
+      <div class="page-header">
+        <h2>لوحة المعلومات</h2>
+        <span class="page-time" id="pageTime"></span>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card" style="--accent:#0096C7">
+          <div class="kpi-icon">📚</div>
+          <div class="kpi-val" id="stBooks">—</div>
+          <div class="kpi-lbl">إجمالي الكتب</div>
+          <div class="kpi-bar" style="background:rgba(0,150,199,.2)"><div class="kpi-fill" id="kpiBooksBar" style="background:#0096C7"></div></div>
+        </div>
+        <div class="kpi-card" style="--accent:#22c55e">
+          <div class="kpi-icon">👥</div>
+          <div class="kpi-val" id="stUsers">—</div>
+          <div class="kpi-lbl">المستخدمون</div>
+          <div class="kpi-bar" style="background:rgba(34,197,94,.2)"><div class="kpi-fill" id="kpiUsersBar" style="background:#22c55e"></div></div>
+        </div>
+        <div class="kpi-card" style="--accent:#a855f7">
+          <div class="kpi-icon">🌐</div>
+          <div class="kpi-val" id="stTotalVisits">—</div>
+          <div class="kpi-lbl">إجمالي الزيارات</div>
+          <div class="kpi-bar" style="background:rgba(168,85,247,.2)"><div class="kpi-fill" id="kpiVisitsBar" style="background:#a855f7"></div></div>
+        </div>
+        <div class="kpi-card" style="--accent:#f59e0b">
+          <div class="kpi-icon">📅</div>
+          <div class="kpi-val" id="stTodayVisits">—</div>
+          <div class="kpi-lbl">زيارات اليوم</div>
+          <div class="kpi-bar" style="background:rgba(245,158,11,.2)"><div class="kpi-fill" id="kpiTodayBar" style="background:#f59e0b"></div></div>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card wide">
+          <div class="chart-title">📈 النشاط اليومي — آخر 14 يوم</div>
+          <div class="chart-wrap"><canvas id="chartActivity"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">🥧 توزيع النشاط</div>
+          <div class="chart-wrap"><canvas id="chartBreakdown"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Second Charts Row -->
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">🌐 المتصفحات</div>
+          <div class="chart-wrap"><canvas id="chartBrowsers"></canvas></div>
+        </div>
+        <div class="chart-card wide">
+          <div class="chart-title">⚡ إجراءات سريعة</div>
+          <div class="qa-grid" style="padding:20px">
+            <button class="qa-btn" onclick="goPage('books'); openAddForm()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              إضافة كتاب
+            </button>
+            <button class="qa-btn" onclick="goPage('users')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+              المستخدمون
+            </button>
+            <button class="qa-btn" onclick="goPage('activity')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              سجل النشاط
+            </button>
+            <button class="qa-btn" onclick="window.open('/','_blank')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              فتح الموقع
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── صفحة: الكتب ── -->
+    <div id="pageBooks" class="page hidden">
+      <div class="page-header">
+        <h2>إدارة الكتب</h2>
+        <button class="btn-primary" onclick="openAddForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          إضافة كتاب
+        </button>
+      </div>
+
+      <!-- نموذج الإضافة/التعديل -->
+      <div id="bookForm" class="form-card hidden">
+        <div class="form-card-title" id="bookFormTitle">إضافة كتاب جديد</div>
+        <input type="hidden" id="bfId" value="" />
+        <div class="form-row">
+          <div class="form-group">
+            <label>عنوان الكتاب *</label>
+            <input id="bfTitle" type="text" placeholder="أدخل العنوان..." />
+          </div>
+          <div class="form-group">
+            <label>المؤلف *</label>
+            <input id="bfAuthor" type="text" placeholder="اسم المؤلف..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>سنة النشر</label>
+            <input id="bfYear" type="number" placeholder="2024" min="1800" max="2030" />
+          </div>
+          <div class="form-group">
+            <label>رابط PDF (اختياري)</label>
+            <input id="bfPdf" type="url" placeholder="https://..." />
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" onclick="saveBook()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="bfSaveLabel">حفظ الكتاب</span>
+          </button>
+          <button class="btn-ghost" onclick="closeBookForm()">إلغاء</button>
+          <span id="bfMsg" class="form-msg"></span>
+        </div>
+      </div>
+
+      <!-- شريط البحث -->
+      <div class="table-toolbar">
+        <input id="booksSearch" type="text" class="search-input" placeholder="ابحث في الكتب..." oninput="filterBooks()" />
+        <span id="booksTotalBadge" class="count-badge"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:50px">#</th>
+              <th>العنوان</th>
+              <th>المؤلف</th>
+              <th style="width:70px">السنة</th>
+              <th style="width:60px">PDF</th>
+              <th style="width:120px">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="booksTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── صفحة: المستخدمون ── -->
+    <div id="pageUsers" class="page hidden">
+      <div class="page-header">
+        <h2>إدارة المستخدمين</h2>
+        <span id="usersTotalBadge" class="count-badge"></span>
+      </div>
+
+      <div class="table-toolbar">
+        <input id="usersSearch" type="text" class="search-input" placeholder="ابحث في المستخدمين..." oninput="filterUsers()" />
+        <button class="btn-ghost-sm" onclick="window.open('/admin/users?key='+encodeURIComponent(getToken()),'_blank')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          رابط مباشر
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:50px">#</th>
+              <th>اسم المستخدم</th>
+              <th>البريد الإلكتروني</th>
+              <th style="width:120px">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="usersTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── صفحة: سجل النشاط ── -->
+    <div id="pageActivity" class="page hidden">
+      <div class="page-header">
+        <h2>سجل النشاط</h2>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span id="activityTotalBadge" class="count-badge"></span>
+          <button class="btn-ghost-sm" onclick="loadActivity()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            تحديث
+          </button>
+        </div>
+      </div>
+
+      <div class="table-toolbar">
+        <input id="activitySearch" type="text" class="search-input" placeholder="ابحث بالاسم أو IP أو النوع..." oninput="filterActivity()" />
+        <select id="activityFilter" class="search-input" style="width:auto;padding:8px 12px" onchange="filterActivity()">
+          <option value="">كل الأنواع</option>
+          <option value="visit">زيارة</option>
+          <option value="login">تسجيل دخول</option>
+          <option value="login_fail">فشل دخول</option>
+          <option value="register">تسجيل جديد</option>
+          <option value="admin_login">دخول مدير</option>
+          <option value="admin_login_fail">فشل دخول مدير</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th style="width:120px">النوع</th>
+              <th>المستخدم</th>
+              <th>البريد</th>
+              <th>IP</th>
+              <th>الوقت (UTC)</th>
+              <th>المتصفح</th>
+            </tr>
+          </thead>
+          <tbody id="activityTbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Modal تأكيد الحذف -->
+<div id="confirmModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-icon">🗑</div>
+    <div class="modal-title" id="modalTitle">تأكيد الحذف</div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-danger" id="modalConfirmBtn">حذف</button>
+      <button class="btn-ghost" onclick="closeModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="admin.js?v=1"></script>
+</body>
+</html>
