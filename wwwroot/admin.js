@@ -1,4 +1,3 @@
-// ═══ Auth ═══
 let adminToken = sessionStorage.getItem('adminToken') || '';
 let allBooks = [];
 let allUsers = [];
@@ -51,11 +50,9 @@ function showDashboard() {
   goPage('stats');
 }
 
-// Enter key on login
 document.getElementById('liPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 document.getElementById('liUser').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('liPass').focus(); });
 
-// Auto-login if token exists
 window.addEventListener('DOMContentLoaded', async () => {
   updateClock();
   setInterval(updateClock, 1000);
@@ -74,7 +71,6 @@ async function verifyToken() {
   } catch { return false; }
 }
 
-// ═══ Navigation ═══
 function goPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   document.querySelectorAll('.sb-link').forEach(a => a.classList.remove('active'));
@@ -86,14 +82,12 @@ function goPage(page) {
   if (page === 'activity') loadActivity();
 }
 
-// ═══ Clock ═══
 function updateClock() {
   const now = new Date();
   const opts = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
   document.getElementById('pageTime').textContent = now.toLocaleDateString('ar-SA', opts);
 }
 
-// ═══ Stats / Analytics ═══
 let chartActivity = null, chartBreakdown = null, chartBrowsers = null;
 
 async function loadStats() {
@@ -102,26 +96,21 @@ async function loadStats() {
     if (!r.ok) return;
     const d = await r.json();
 
-    // KPI cards
     setText('stBooks',      d.totalBooks ?? '—');
     setText('stUsers',      d.totalUsers ?? '—');
     setText('stTotalVisits', d.totalVisits ?? '—');
     setText('stTodayVisits', d.todayVisits ?? '—');
 
-    // KPI progress bars (relative to max)
     const maxVal = Math.max(d.totalBooks, d.totalUsers, d.totalVisits, d.todayVisits, 1);
     setBar('kpiBooksBar',  d.totalBooks,   maxVal);
     setBar('kpiUsersBar',  d.totalUsers,   maxVal);
     setBar('kpiVisitsBar', d.totalVisits,  maxVal);
     setBar('kpiTodayBar',  d.todayVisits,  maxVal);
 
-    // Chart: Daily activity (line)
     renderActivityChart(d.labels, d.dailyVisits, d.dailyLogins, d.dailyRegs);
 
-    // Chart: Activity breakdown (doughnut)
     if (d.breakdown) renderBreakdownChart(d.breakdown);
 
-    // Chart: Browsers (doughnut)
     if (d.browsers) renderBrowsersChart(d.browsers);
 
   } catch(e) { console.error('loadStats', e); }
@@ -192,7 +181,6 @@ function renderBrowsersChart(browsers) {
   const ctx = document.getElementById('chartBrowsers');
   if (!ctx) return;
   if (chartBrowsers) chartBrowsers.destroy();
-  // browsers is [{browser, count}, ...] from the API
   const arr    = Array.isArray(browsers) ? browsers : Object.entries(browsers).map(([b,c]) => ({ browser: b, count: c }));
   const labels = arr.map(x => x.browser);
   const data   = arr.map(x => x.count);
@@ -211,7 +199,6 @@ function renderBrowsersChart(browsers) {
   });
 }
 
-// ═══ Books ═══
 async function loadBooks() {
   const tbody = document.getElementById('booksTbody');
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;opacity:.5">جارٍ التحميل...</td></tr>';
@@ -340,7 +327,6 @@ async function deleteBook(id) {
   } catch { showToast('تعذّر الاتصال', 'error'); }
 }
 
-// ═══ Users ═══
 async function loadUsers() {
   const tbody = document.getElementById('usersTbody');
   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;opacity:.5">جارٍ التحميل...</td></tr>';
@@ -396,7 +382,6 @@ async function deleteUser(id, username) {
   } catch { showToast('تعذّر الاتصال', 'error'); }
 }
 
-// ═══ Activity Log ═══
 let allActivity = [];
 
 async function loadActivity() {
@@ -461,7 +446,6 @@ function filterActivity() {
   renderActivity(filtered);
 }
 
-// ═══ Modal ═══
 function closeModal() {
   document.getElementById('confirmModal').classList.add('hidden');
 }
@@ -469,7 +453,6 @@ document.getElementById('confirmModal').addEventListener('click', e => {
   if (e.target === document.getElementById('confirmModal')) closeModal();
 });
 
-// ═══ Toast ═══
 let toastTimer;
 function showToast(msg, type = 'success') {
   clearTimeout(toastTimer);
@@ -480,7 +463,6 @@ function showToast(msg, type = 'success') {
   toastTimer = setTimeout(() => t.classList.add('hidden'), 3000);
 }
 
-// ═══ Helpers ═══
 function setMsg(msg, type) {
   const el = document.getElementById('bfMsg');
   el.textContent = msg; el.className = `form-msg ${type}`;

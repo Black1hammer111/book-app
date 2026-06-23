@@ -1,8 +1,7 @@
 let allBooks = [];
 let pendingDeleteId = null;
-let authMode = 'login'; // 'login' | 'register' | 'admin'
+let authMode = 'login';
 
-// card colors
 const CARD_COLORS = [
   '#0a3d62','#1e5799','#006994','#0c6e9b','#003B5C',
   '#0077B6','#00506e','#2c5f8a','#0d5c7a','#1b4c8a',
@@ -15,7 +14,6 @@ const CARD_DARKS = [
 function getBookColor(id) { return CARD_COLORS[(id - 1) % CARD_COLORS.length]; }
 function getBookDark(id)  { return CARD_DARKS[(id - 1) % CARD_DARKS.length]; }
 
-// i18n translations
 const TRANSLATIONS = {
   ar: {
     'site-heading':       'مكتبة <span class="gradient-text">المياه</span>',
@@ -228,7 +226,6 @@ function toggleLang() {
   applyLang();
 }
 
-// animated wave background — 2D canvas
 (function initWaves() {
   const canvas = document.getElementById('waveCanvas');
   if (!canvas) return;
@@ -244,7 +241,6 @@ function toggleLang() {
 
   const isMobile = () => window.innerWidth < 768;
 
-  // 6 wave layers — from deep to surface
   const LAYERS = [
     { amp: 0.18, freq: 0.006, spd: 0.008, yRatio: 0.50, alpha: 0.22, c1: '#001830', c2: '#002a50' },
     { amp: 0.14, freq: 0.008, spd: 0.011, yRatio: 0.56, alpha: 0.28, c1: '#002244', c2: '#003366' },
@@ -279,7 +275,6 @@ function toggleLang() {
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // shimmer on top edge
     ctx.beginPath();
     ctx.moveTo(0, baseY);
     for (let x = 0; x <= W; x += steps) {
@@ -303,7 +298,6 @@ function toggleLang() {
   draw();
 }());
 
-// auth
 function getToken()     { return sessionStorage.getItem('adminToken'); }
 function isAdmin()      { return !!getToken(); }
 function isLoggedIn()   { return isAdmin() || !!sessionStorage.getItem('userToken'); }
@@ -329,7 +323,6 @@ function updateAdminUI() {
   if (unEl && getUsername()) unEl.textContent = getUsername();
 }
 
-// login overlay
 function showLoginOverlay(tab = 'login') {
   document.getElementById('loginOverlay').classList.remove('hidden');
   document.getElementById('chatbotWidget')?.classList.add('hidden');
@@ -482,7 +475,6 @@ function logout() {
   showLoginOverlay('login');
 }
 
-// hero slider
 let heroIndex = 0;
 let heroTimer = null;
 const HERO_DURATION = 10000;
@@ -560,7 +552,6 @@ function runCountUp() {
   });
 }
 
-// init
 document.addEventListener('DOMContentLoaded', () => {
   applyLang();
   const adminURL = new URLSearchParams(window.location.search).has('admin');
@@ -584,7 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// data loading
 async function loadAllBooks() {
   renderSkeletons();
   try {
@@ -603,7 +593,6 @@ async function loadAllBooks() {
   }
 }
 
-// search
 async function doSearch() {
   const q = document.getElementById('searchInput').value.trim();
   hidePredictions();
@@ -628,7 +617,6 @@ async function smartSearch(q) {
   } catch { showError(); }
 }
 
-// predictions
 async function fetchPredictions(q) {
   try {
     const res = await fetch(`/api/books/smart-search?q=${encodeURIComponent(q)}`);
@@ -666,7 +654,6 @@ function hidePredictions() {
   document.getElementById('predictions').classList.add('hidden');
 }
 
-// book title translations (Arabic → English)
 const BOOK_EN = {
   "الماء والغذاء: مستقبل البشرية":          { t: "Water & Food: The Future of Humanity",         a: "Dr. Salim Ahmad" },
   "البحار والمحيطات: عجائب أسرار الأعماق":  { t: "Seas & Oceans: Wonders of the Deep",           a: "Omar Al-Faruq" },
@@ -700,7 +687,6 @@ const BOOK_EN = {
   "رطوبة الجو والغيوم":                       { t: "Atmospheric Humidity and Clouds",             a: "Dr. Mansour Ubaid" },
 };
 
-// book covers (Google Books API)
 let _bkCvr = {};
 try { _bkCvr = JSON.parse(localStorage.getItem('_bkCvr') || '{}'); } catch {}
 
@@ -743,7 +729,6 @@ function loadBookCovers() {
   });
 }
 
-// render
 function renderBooks(books) {
   const grid  = document.getElementById('booksGrid');
   const noRes = document.getElementById('noResults');
@@ -818,13 +803,11 @@ function renderSkeletons() {
   `).join('');
 }
 
-// stats
 function updateStats(shown, total) {
   const el = document.getElementById('statsText');
   el.textContent = shown === total ? t('stats-total', total) : t('stats-filtered', shown, total);
 }
 
-// add book
 function toggleAddForm() {
   document.getElementById('addForm').classList.toggle('hidden');
 }
@@ -866,7 +849,6 @@ async function addBook() {
   }
 }
 
-// delete book
 function openDeleteModal(id, title) {
   pendingDeleteId = id;
   document.getElementById('deleteBookTitle').textContent = `«${title}»`;
@@ -907,7 +889,6 @@ async function confirmDelete() {
   }
 }
 
-// toast notifications
 function showToast(msg, icon = '✓') {
   const container = document.getElementById('toastContainer');
   if (!container) return;
@@ -921,7 +902,6 @@ function showToast(msg, icon = '✓') {
   }, 3500);
 }
 
-// chatbot
 let chatbotOpen = false;
 let chatbotGreeted = false;
 
@@ -1113,7 +1093,6 @@ function sendChat() {
   }, 700 + Math.random() * 400);
 }
 
-// admin panel (inline)
 function openAdminPanel() {
   document.getElementById('adminPanel').classList.remove('hidden');
   switchApTab('stats');
@@ -1239,7 +1218,6 @@ async function apDeleteUser(id, username, btnEl) {
   } catch { btnEl.disabled = false; btnEl.textContent = '🗑 حذف'; }
 }
 
-// helpers
 function escHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
