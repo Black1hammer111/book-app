@@ -229,12 +229,37 @@ public class SmartSearchEngine
                 break;
 
             default:
-                // General search — search titles and authors
+                // 1. Try exact phrase match first
                 results = books.Where(b =>
                     b.Title.ToLower().Contains(q) ||
-                    b.Author.ToLower().Contains(q) ||
-                    q.Split(' ').Any(word => b.Title.ToLower().Contains(word) || b.Author.ToLower().Contains(word))
+                    b.Author.ToLower().Contains(q)
                 ).ToList();
+
+                // 2. If no results, try matching ALL meaningful words (AND logic)
+                if (!results.Any())
+                {
+                    var meaningfulWords = q.Split(' ')
+                        .Where(w => w.Length > 2)
+                        .ToList();
+                    if (meaningfulWords.Any())
+                    {
+                        results = books.Where(b =>
+                            meaningfulWords.All(word =>
+                                b.Title.ToLower().Contains(word) ||
+                                b.Author.ToLower().Contains(word))
+                        ).ToList();
+
+                        // 3. If still no results, try ANY word match as last resort
+                        if (!results.Any())
+                        {
+                            results = books.Where(b =>
+                                meaningfulWords.Any(word =>
+                                    b.Title.ToLower().Contains(word) ||
+                                    b.Author.ToLower().Contains(word))
+                            ).ToList();
+                        }
+                    }
+                }
 
                 aiResponse = results.Count > 0
                     ? GenerateSmartResponse(query, results)
