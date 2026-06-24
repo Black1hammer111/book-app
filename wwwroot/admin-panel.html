@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة التحكم — مكتبة المياه</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#0d1b2a;color:#e0e6ef;min-height:100vh;display:flex}
+    .sidebar{width:220px;background:#0a1628;border-left:1px solid #1e3a5f;display:flex;flex-direction:column;padding:24px 0;flex-shrink:0}
+    .sidebar-logo{padding:0 20px 24px;border-bottom:1px solid #1e3a5f}
+    .logo-icon{font-size:28px}
+    .logo-text{font-size:18px;font-weight:700;color:#38b6ff;margin-top:4px}
+    .sidebar-nav{padding:16px 0;flex:1}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;color:#8899aa;font-size:14px;border-right:3px solid transparent;transition:all 0.2s}
+    .nav-item:hover{background:#1a2d45;color:#e0e6ef}
+    .nav-item.active{background:#1a2d45;color:#38b6ff;border-right-color:#38b6ff}
+    .sidebar-bottom{padding:16px 20px;border-top:1px solid #1e3a5f}
+    .admin-info{color:#8899aa;font-size:13px;margin-bottom:10px}
+    .btn-logout{background:#1e3a5f;color:#e0e6ef;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;width:100%;font-family:inherit;font-size:13px}
+    .btn-logout:hover{background:#c0392b}
+    .main{flex:1;padding:28px 32px;overflow-y:auto}
+    .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px}
+    .page-title{font-size:24px;font-weight:700;color:#e0e6ef}
+    .page-date{font-size:13px;color:#8899aa;margin-top:4px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .stat-card{background:#112240;border-radius:12px;padding:20px;border-bottom:3px solid}
+    .stat-card.orange{border-color:#f39c12}
+    .stat-card.purple{border-color:#9b59b6}
+    .stat-card.green{border-color:#27ae60}
+    .stat-card.blue{border-color:#3498db}
+    .stat-icon{font-size:24px;margin-bottom:12px}
+    .stat-value{font-size:36px;font-weight:700;color:#38b6ff;margin-bottom:6px}
+    .stat-label{font-size:13px;color:#8899aa}
+    .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+    .chart-card{background:#112240;border-radius:12px;padding:20px}
+    .chart-title{font-size:15px;font-weight:600;color:#e0e6ef;margin-bottom:14px}
+    .chart-legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#8899aa}
+    .legend-dot{width:10px;height:10px;border-radius:50%}
+    .section{display:none}
+    .section.active{display:block}
+    .table-card{background:#112240;border-radius:12px;padding:20px}
+    .tbl{width:100%;border-collapse:collapse;font-size:13px}
+    .tbl th{text-align:right;padding:8px 12px;color:#8899aa;border-bottom:1px solid #1e3a5f;font-weight:500}
+    .tbl td{padding:10px 12px;border-bottom:1px solid #1a2d45;color:#c0ccd8}
+    .tbl tr:last-child td{border-bottom:none}
+    .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+    .b-visit{background:#1a3a5c;color:#38b6ff}
+    .b-login{background:#1a4a2a;color:#27ae60}
+    .b-reg{background:#3a2a5c;color:#9b59b6}
+    .b-fail{background:#4a1a1a;color:#e74c3c}
+    .b-admin{background:#4a3a1a;color:#f39c12}
+    .loading{text-align:center;padding:40px;color:#8899aa}
+    @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid{grid-template-columns:1fr}.sidebar{width:180px}}
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">💧</div>
+    <div class="logo-text">مكتبة المياه</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" onclick="showSection('dashboard',this)">📊 لوحة المعلومات</div>
+    <div class="nav-item" onclick="showSection('books',this)">📚 إدارة الكتب</div>
+    <div class="nav-item" onclick="showSection('users',this)">👥 إدارة المستخدمين</div>
+    <div class="nav-item" onclick="showSection('activity',this)">📋 سجل النشاط</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="admin-info" id="adminName">🔑 المدير</div>
+    <button class="btn-logout" onclick="logout()">⬅ خروج للموقع</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- لوحة المعلومات -->
+  <div class="section active" id="sec-dashboard">
+    <div class="page-header">
+      <div>
+        <div class="page-title">لوحة المعلومات</div>
+        <div class="page-date" id="currentDate"></div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card orange"><div class="stat-icon">📅</div><div class="stat-value" id="statToday">—</div><div class="stat-label">زيارات اليوم</div></div>
+      <div class="stat-card purple"><div class="stat-icon">🌐</div><div class="stat-value" id="statVisits">—</div><div class="stat-label">إجمالي الزيارات</div></div>
+      <div class="stat-card green"><div class="stat-icon">👥</div><div class="stat-value" id="statUsers">—</div><div class="stat-label">المستخدمون</div></div>
+      <div class="stat-card blue"><div class="stat-icon">📚</div><div class="stat-value" id="statBooks">—</div><div class="stat-label">إجمالي الكتب</div></div>
+    </div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">📈 النشاط اليومي — آخر ١٤ يوم</div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#38b6ff"></div>زيارات</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#27ae60"></div>دخول</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div>تسجيل</div>
+        </div>
+        <canvas id="lineChart" height="110"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🔵 توزيع النشاط</div>
+        <canvas id="donutChart" height="190"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- إدارة الكتب -->
+  <div class="section" id="sec-books">
+    <div class="page-header"><div class="page-title">📚 إدارة الكتب</div></div>
+    <div class="table-card">
+      <div class="loading" id="booksLoading">جارٍ التحميل...</div>
+      <table class="tbl" id="booksTable" style="display:none">
+        <thead><tr><th>#</th><th>العنوان</th><th>المؤلف</th><th>السنة</th></tr></thead>
+        <tbody id="booksTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- إدارة المستخدمين -->
+  <div class="section" id="sec-users">
+    <div class="page-header"><div class="page-title">👥 إدارة المستخدمين</div></div>
+    <div class="table-card">
+      <div class="loading" id="usersLoading">جارٍ التحميل...</div>
+      <table class="tbl" id="usersTable" style="display:none">
+        <thead><tr><th>#</th><th>اسم المستخدم</th><th>البريد الإلكتروني</th></tr></thead>
+        <tbody id="usersTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- سجل النشاط -->
+  <div class="section" id="sec-activity">
+    <div class="page-header"><div class="page-title">📋 سجل النشاط</div></div>
+    <div class="table-card">
+      <div class="loading" id="activityLoading">جارٍ التحميل...</div>
+      <table class="tbl" id="activityTable" style="display:none">
+        <thead><tr><th>النوع</th><th>المستخدم</th><th>IP</th><th>الوقت</th></tr></thead>
+        <tbody id="activityTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const token = sessionStorage.getItem('adminToken');
+  if (!token) { window.location.href = '/?admin'; }
+
+  document.getElementById('adminName').textContent = '🔑 ' + (sessionStorage.getItem('username') || 'المدير');
+  document.getElementById('currentDate').textContent = new Date().toLocaleString('ar-SA', {
+    year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit'
+  });
+
+  const H = { 'X-Api-Key': token };
+  let lineChart, donutChart;
+
+  async function loadDashboard() {
+    try {
+      const res = await fetch('/api/admin/analytics', { headers: H });
+      const d = await res.json();
+      document.getElementById('statToday').textContent  = d.todayVisits;
+      document.getElementById('statVisits').textContent = d.totalVisits;
+      document.getElementById('statUsers').textContent  = d.totalUsers;
+      document.getElementById('statBooks').textContent  = d.totalBooks;
+
+      if (lineChart) lineChart.destroy();
+      lineChart = new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+          labels: d.labels,
+          datasets: [
+            { label:'زيارات', data:d.dailyVisits, borderColor:'#38b6ff', backgroundColor:'rgba(56,182,255,0.1)', tension:0.4, fill:true, pointRadius:3 },
+            { label:'دخول',   data:d.dailyLogins, borderColor:'#27ae60', backgroundColor:'rgba(39,174,96,0.08)',  tension:0.4, fill:true, pointRadius:3 },
+            { label:'تسجيل', data:d.dailyRegs,   borderColor:'#9b59b6', backgroundColor:'rgba(155,89,182,0.08)', tension:0.4, fill:true, pointRadius:3 },
+          ]
+        },
+        options: {
+          responsive:true,
+          plugins:{ legend:{ display:false } },
+          scales:{
+            x:{ ticks:{ color:'#8899aa', font:{ size:11 } }, grid:{ color:'#1e3a5f' } },
+            y:{ ticks:{ color:'#8899aa' }, grid:{ color:'#1e3a5f' }, beginAtZero:true }
+          }
+        }
+      });
+
+      const b = d.breakdown;
+      if (donutChart) donutChart.destroy();
+      donutChart = new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: {
+          labels:['زيارات','دخول','تسجيل','فشل دخول','مدير'],
+          datasets:[{ data:[b.visits,b.logins,b.regs,b.fails,b.admins], backgroundColor:['#38b6ff','#27ae60','#9b59b6','#e74c3c','#f39c12'], borderWidth:0 }]
+        },
+        options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#8899aa', font:{ size:11 }, padding:8 } } }, cutout:'65%' }
+      });
+    } catch(e) { console.error(e); }
+  }
+
+  async function loadBooks() {
+    document.getElementById('booksLoading').style.display = 'block';
+    document.getElementById('booksTable').style.display   = 'none';
+    const res = await fetch('/api/books');
+    const books = await res.json();
+    document.getElementById('booksTbody').innerHTML = books.map((b,i) =>
+      `<tr><td>${i+1}</td><td>${b.title}</td><td>${b.author}</td><td>${b.year||'—'}</td></tr>`
+    ).join('');
+    document.getElementById('booksLoading').style.display = 'none';
+    document.getElementById('booksTable').style.display   = 'table';
+  }
+
+  async function loadUsers() {
+    document.getElementById('usersLoading').style.display = 'block';
+    document.getElementById('usersTable').style.display   = 'none';
+    const res = await fetch('/api/admin/users', { headers: H });
+    const users = await res.json();
+    document.getElementById('usersTbody').innerHTML = users.map((u,i) =>
+      `<tr><td>${i+1}</td><td>${u.username}</td><td>${u.email||'—'}</td></tr>`
+    ).join('');
+    document.getElementById('usersLoading').style.display = 'none';
+    document.getElementById('usersTable').style.display   = 'table';
+  }
+
+  async function loadActivity() {
+    document.getElementById('activityLoading').style.display = 'block';
+    document.getElementById('activityTable').style.display   = 'none';
+    const res = await fetch('/api/admin/activity', { headers: H });
+    const logs = await res.json();
+    const badge = t => ({
+      visit:'<span class="badge b-visit">زيارة</span>',
+      login:'<span class="badge b-login">دخول</span>',
+      register:'<span class="badge b-reg">تسجيل</span>',
+      login_fail:'<span class="badge b-fail">فشل دخول</span>',
+      admin_login_fail:'<span class="badge b-fail">فشل مدير</span>',
+      admin_login:'<span class="badge b-admin">مدير</span>',
+    }[t] || `<span class="badge">${t}</span>`);
+    document.getElementById('activityTbody').innerHTML = logs.map(l =>
+      `<tr><td>${badge(l.type)}</td><td>${l.username||'—'}</td><td>${l.ipAddress||'—'}</td><td>${l.createdAt}</td></tr>`
+    ).join('');
+    document.getElementById('activityLoading').style.display = 'none';
+    document.getElementById('activityTable').style.display   = 'table';
+  }
+
+  function showSection(name, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('sec-' + name).classList.add('active');
+    el.classList.add('active');
+    if (name === 'books')    loadBooks();
+    if (name === 'users')    loadUsers();
+    if (name === 'activity') loadActivity();
+  }
+
+  function logout() {
+    sessionStorage.removeItem('adminToken');
+    sessionStorage.removeItem('username');
+    window.location.href = '/';
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>

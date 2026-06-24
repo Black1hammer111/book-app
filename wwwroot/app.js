@@ -452,9 +452,7 @@ async function doAdminLogin() {
       if (nameEl) nameEl.textContent = data.username || 'عمر';
       hideLoginOverlay();
       updateAdminUI();
-      renderBooks(allBooks);
-      showToast(t('toast-admin'), '🔑');
-      setTimeout(() => openAdminPanel(), 300);
+      window.location.href = '/admin-panel.html';
     } else if (res.status === 401) {
       showAuthError(t('err-server'));
     } else {
