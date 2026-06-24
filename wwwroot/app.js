@@ -350,6 +350,7 @@ function showAuthTab(mode) {
   const isAdminMode = mode === 'admin';
   document.getElementById('formUserAuth')?.classList.toggle('hidden', isAdminMode);
   document.getElementById('formAdmin')?.classList.toggle('hidden', !isAdminMode);
+  document.querySelector('.auth-tabs')?.classList.toggle('hidden', isAdminMode);
   document.getElementById('fieldEmail')?.classList.toggle('hidden', mode !== 'register');
   document.getElementById('authBtnText').textContent =
     mode === 'register' ? t('auth-btn-register') : mode === 'admin' ? t('auth-btn-admin') : t('auth-btn-login');
@@ -555,8 +556,13 @@ function runCountUp() {
 document.addEventListener('DOMContentLoaded', () => {
   applyLang();
   const adminURL = new URLSearchParams(window.location.search).has('admin');
-  if (!isLoggedIn()) {
-    showLoginOverlay(adminURL ? 'admin' : 'login');
+  if (adminURL) {
+    localStorage.removeItem('userToken');
+    localStorage.removeItem('username');
+    sessionStorage.removeItem('username');
+    showLoginOverlay('admin');
+  } else if (!isLoggedIn()) {
+    showLoginOverlay('login');
   } else {
     document.getElementById('chatbotWidget')?.classList.remove('hidden');
   }

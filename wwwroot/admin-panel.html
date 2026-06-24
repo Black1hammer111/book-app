@@ -147,8 +147,10 @@
 </div>
 
 <script>
-  const token = sessionStorage.getItem('adminToken');
+  const urlToken = new URLSearchParams(window.location.search).get('key');
+  const token = urlToken || sessionStorage.getItem('adminToken');
   if (!token) { window.location.href = '/?admin'; }
+  if (urlToken) sessionStorage.setItem('adminToken', urlToken);
 
   document.getElementById('adminName').textContent = '🔑 ' + (sessionStorage.getItem('username') || 'المدير');
   document.getElementById('currentDate').textContent = new Date().toLocaleString('ar-SA', {
