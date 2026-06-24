@@ -300,8 +300,8 @@ function toggleLang() {
 
 function getToken()     { return sessionStorage.getItem('adminToken'); }
 function isAdmin()      { return !!getToken(); }
-function isLoggedIn()   { return isAdmin() || !!sessionStorage.getItem('userToken'); }
-function getUsername()  { return sessionStorage.getItem('username') || ''; }
+function isLoggedIn()   { return isAdmin() || !!localStorage.getItem('userToken'); }
+function getUsername()  { return sessionStorage.getItem('username') || localStorage.getItem('username') || ''; }
 
 function updateAdminUI() {
   const admin  = isAdmin();
@@ -396,8 +396,8 @@ async function doRegister() {
     });
     const data = await res.json();
     if (res.ok) {
-      sessionStorage.setItem('userToken', data.token);
-      sessionStorage.setItem('username', data.username);
+      localStorage.setItem('userToken', data.token);
+      localStorage.setItem('username', data.username);
       hideLoginOverlay();
       updateAdminUI();
       showToast(t('toast-register'), '✓');
@@ -420,8 +420,8 @@ async function doUserLogin() {
     });
     const data = await res.json().catch(() => ({}));
     if (res.ok) {
-      sessionStorage.setItem('userToken', data.token);
-      sessionStorage.setItem('username', data.username);
+      localStorage.setItem('userToken', data.token);
+      localStorage.setItem('username', data.username);
       hideLoginOverlay();
       updateAdminUI();
       showToast(t('toast-login'), '✓');
@@ -467,8 +467,9 @@ function browseAsGuest() { hideLoginOverlay(); }
 
 function logout() {
   sessionStorage.removeItem('adminToken');
-  sessionStorage.removeItem('userToken');
   sessionStorage.removeItem('username');
+  localStorage.removeItem('userToken');
+  localStorage.removeItem('username');
   updateAdminUI();
   document.getElementById('addForm').classList.add('hidden');
   renderBooks(allBooks);
