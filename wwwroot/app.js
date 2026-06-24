@@ -945,7 +945,7 @@ const CHAT_RULES = [
   { kw: ['من انت','ما انت','عرّفني','عرفني عليك'],
     reply: 'أنا <b>مساعد مكتبة المياه</b> 🤖💧<br>مساعد ذكي يساعدك في:<br>• البحث عن الكتب<br>• الإجابة على أسئلتك<br>• إرشادك في استخدام المكتبة' },
   { kw: ['موقع','رابط','url','لينك'],
-    reply: 'رابط الموقع هو: 🌐<br><b>book-app-1014107810225.us-west1.run.app</b><br>يمكنك حفظه والعودة إليه في أي وقت.' },
+    reply: 'رابط الموقع هو: 🌐<br><b>book-app-production-41c6.up.railway.app</b><br>يمكنك حفظه والعودة إليه في أي وقت.' },
 ];
 
 const CHAT_RULES_EN = [
@@ -988,7 +988,7 @@ const CHAT_RULES_EN = [
   { kw: ['who are you','what are you','about you','introduce'],
     reply: 'I am the <b>Water Library Assistant</b> 🤖💧<br>A smart assistant that helps you:<br>• Find the right books<br>• Answer your questions<br>• Guide you through the library' },
   { kw: ['website','link','url','site'],
-    reply: 'The website URL is: 🌐<br><b>book-app-1014107810225.us-west1.run.app</b><br>Bookmark it and come back anytime!' },
+    reply: 'The website URL is: 🌐<br><b>book-app-production-41c6.up.railway.app</b><br>Bookmark it and come back anytime!' },
 ];
 
 function toggleChatbot() {

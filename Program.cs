@@ -20,10 +20,7 @@ else
         ?? "Data Source=books.db";
 }
 
-var usePostgres = !string.IsNullOrWhiteSpace(databaseUrl)
-    || (builder.Configuration.GetValue<bool>("UseGoogleCloudSQL")
-        && !string.IsNullOrWhiteSpace(connectionString)
-        && !connectionString.Contains("YOUR_PROJECT_ID"));
+var usePostgres = !string.IsNullOrWhiteSpace(databaseUrl);
 
 SqliteConnection? sqliteConn = null;
 
@@ -584,7 +581,7 @@ static async Task SendWelcomeEmail(string to, string username, IConfiguration co
                     <div style="color:#fff;font-size:14px;font-weight:700">{System.Net.WebUtility.HtmlEncode(username)}</div>
                   </div>
                   <div style="text-align:center">
-                    <a href="https://book-app-1014107810225.us-west1.run.app"
+                    <a href="https://book-app-production-41c6.up.railway.app"
                        style="display:inline-block;background:linear-gradient(135deg,#0077B6,#00a8e8);color:#fff;text-decoration:none;padding:13px 32px;border-radius:99px;font-weight:700;font-size:15px">
                       زيارة المكتبة ←
                     </a>
