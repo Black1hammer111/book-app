@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دخول المدير — مكتبة المياه</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#0d1b2a;min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+    .logo{text-align:center;margin-bottom:24px}
+    .logo-icon{width:60px;height:60px;background:linear-gradient(135deg,#38b6ff,#1a6fa0);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:10px}
+    .logo-text{font-size:22px;font-weight:700;color:#1a3a5c}
+    .field{margin-bottom:18px}
+    .field label{display:block;font-size:13px;color:#5a6a7a;margin-bottom:6px;font-weight:500}
+    .field input{width:100%;border:1.5px solid #dde3ea;border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;color:#1a3a5c;transition:border-color 0.2s;direction:ltr;text-align:right}
+    .field input:focus{outline:none;border-color:#38b6ff}
+    .btn-login{width:100%;background:linear-gradient(135deg,#38b6ff,#1a6fa0);color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:opacity 0.2s}
+    .btn-login:hover{opacity:0.9}
+    .btn-login:disabled{opacity:0.6;cursor:not-allowed}
+    .error{background:#fff0f0;color:#c0392b;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;border:1px solid #f5c6cb}
+    .back-link{text-align:center;margin-top:20px}
+    .back-link a{color:#8899aa;font-size:13px;text-decoration:none}
+    .back-link a:hover{color:#38b6ff}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">💧</div>
+      <div class="logo-text">مكتبة المياه</div>
+    </div>
+
+    <div class="error" id="errMsg"></div>
+
+    <div class="field">
+      <label>اسم مستخدم المدير</label>
+      <input type="text" id="username" placeholder="" autocomplete="off"
+             onkeydown="if(event.key==='Enter') document.getElementById('password').focus()">
+    </div>
+    <div class="field">
+      <label>كلمة مرور المدير</label>
+      <input type="password" id="password" placeholder=""
+             onkeydown="if(event.key==='Enter') doLogin()">
+    </div>
+
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">دخول كمدير</button>
+
+    <div class="back-link">
+      <a href="/">← العودة للموقع</a>
+    </div>
+  </div>
+
+  <script>
+    if (sessionStorage.getItem('adminToken')) {
+      window.location.href = '/admin-panel.html';
+    }
+
+    async function doLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const btn      = document.getElementById('loginBtn');
+      const err      = document.getElementById('errMsg');
+
+      if (!username || !password) { showErr('يرجى إدخال اسم المستخدم وكلمة المرور'); return; }
+
+      btn.disabled = true; btn.textContent = 'جارٍ الدخول...';
+      err.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          sessionStorage.setItem('adminToken', data.token);
+          sessionStorage.setItem('username', data.username || username);
+          window.location.href = '/admin-panel.html';
+        } else if (res.status === 401) {
+          showErr('اسم المستخدم أو كلمة المرور غير صحيحة');
+        } else {
+          showErr('حدث خطأ، حاول مجدداً');
+        }
+      } catch {
+        showErr('تعذّر الاتصال بالخادم');
+      } finally {
+        btn.disabled = false; btn.textContent = 'دخول كمدير';
+      }
+    }
+
+    function showErr(msg) {
+      const err = document.getElementById('errMsg');
+      err.textContent = msg;
+      err.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

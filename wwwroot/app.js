@@ -557,10 +557,8 @@ document.addEventListener('DOMContentLoaded', () => {
   applyLang();
   const adminURL = new URLSearchParams(window.location.search).has('admin');
   if (adminURL) {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('username');
-    sessionStorage.removeItem('username');
-    showLoginOverlay('admin');
+    window.location.href = '/admin-login.html';
+    return;
   } else if (!isLoggedIn()) {
     showLoginOverlay('login');
   } else {
