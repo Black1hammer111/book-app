@@ -26,8 +26,6 @@ SqliteConnection? sqliteConn = null;
 
 if (!usePostgres)
 {
-    // Share a single SQLite connection: EF Core 10 + SQLite opens separate connections
-    // that cannot see tables created on a different connection in the same process.
     sqliteConn = new SqliteConnection(connectionString);
     sqliteConn.Open();
 }
@@ -48,8 +46,6 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
     .AllowAnyOrigin()
     .WithMethods("GET", "POST", "PUT", "DELETE")
     .WithHeaders("Content-Type", "X-Api-Key")));
-
-// ── App ───────────────────────────────────────────────────────────────────────
 
 var app = builder.Build();
 

@@ -13,7 +13,6 @@
 </head>
 <body>
 
-<!-- ═══ شاشة تسجيل الدخول ═══ -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="login-logo">
@@ -36,11 +35,9 @@
   </div>
 </div>
 
-<!-- ═══ لوحة التحكم ═══ -->
 <div id="dashboard" class="hidden">
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sb-brand">
       <svg viewBox="0 0 32 32" fill="none" width="28"><circle cx="16" cy="16" r="16" fill="rgba(0,150,199,.2)"/><path d="M16 5c0 0-8 6-8 11a8 8 0 0016 0c0-5-8-11-8-11z" fill="#0096C7"/></svg>
       <span>مكتبة المياه</span>
@@ -75,18 +72,15 @@
     </div>
   </aside>
 
-  <!-- Main content -->
-  <main class="main-content">
+<main class="main-content">
 
-    <!-- ── صفحة: الإحصائيات ── -->
-    <div id="pageStats" class="page">
+<div id="pageStats" class="page">
       <div class="page-header">
         <h2>لوحة المعلومات</h2>
         <span class="page-time" id="pageTime"></span>
       </div>
 
-      <!-- KPI Cards -->
-      <div class="kpi-grid">
+<div class="kpi-grid">
         <div class="kpi-card" style="--accent:#0096C7">
           <div class="kpi-icon">📚</div>
           <div class="kpi-val" id="stBooks">—</div>
@@ -113,8 +107,7 @@
         </div>
       </div>
 
-      <!-- Charts Row -->
-      <div class="charts-row">
+<div class="charts-row">
         <div class="chart-card wide">
           <div class="chart-title">📈 النشاط اليومي — آخر 14 يوم</div>
           <div class="chart-wrap"><canvas id="chartActivity"></canvas></div>
@@ -125,8 +118,7 @@
         </div>
       </div>
 
-      <!-- Second Charts Row -->
-      <div class="charts-row">
+<div class="charts-row">
         <div class="chart-card">
           <div class="chart-title">🌐 المتصفحات</div>
           <div class="chart-wrap"><canvas id="chartBrowsers"></canvas></div>
@@ -155,8 +147,7 @@
       </div>
     </div>
 
-    <!-- ── صفحة: الكتب ── -->
-    <div id="pageBooks" class="page hidden">
+<div id="pageBooks" class="page hidden">
       <div class="page-header">
         <h2>إدارة الكتب</h2>
         <button class="btn-primary" onclick="openAddForm()">
@@ -165,8 +156,7 @@
         </button>
       </div>
 
-      <!-- نموذج الإضافة/التعديل -->
-      <div id="bookForm" class="form-card hidden">
+<div id="bookForm" class="form-card hidden">
         <div class="form-card-title" id="bookFormTitle">إضافة كتاب جديد</div>
         <input type="hidden" id="bfId" value="" />
         <div class="form-row">
@@ -199,8 +189,7 @@
         </div>
       </div>
 
-      <!-- شريط البحث -->
-      <div class="table-toolbar">
+<div class="table-toolbar">
         <input id="booksSearch" type="text" class="search-input" placeholder="ابحث في الكتب..." oninput="filterBooks()" />
         <span id="booksTotalBadge" class="count-badge"></span>
       </div>
@@ -222,8 +211,7 @@
       </div>
     </div>
 
-    <!-- ── صفحة: المستخدمون ── -->
-    <div id="pageUsers" class="page hidden">
+<div id="pageUsers" class="page hidden">
       <div class="page-header">
         <h2>إدارة المستخدمين</h2>
         <span id="usersTotalBadge" class="count-badge"></span>
@@ -252,8 +240,7 @@
       </div>
     </div>
 
-    <!-- ── صفحة: سجل النشاط ── -->
-    <div id="pageActivity" class="page hidden">
+<div id="pageActivity" class="page hidden">
       <div class="page-header">
         <h2>سجل النشاط</h2>
         <div style="display:flex;gap:10px;align-items:center">
@@ -299,7 +286,6 @@
   </main>
 </div>
 
-<!-- Modal تأكيد الحذف -->
 <div id="confirmModal" class="modal-overlay hidden">
   <div class="modal-box">
     <div class="modal-icon">🗑</div>
@@ -312,7 +298,6 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div id="toast" class="toast hidden"></div>
 
 <script src="admin.js?v=1"></script>

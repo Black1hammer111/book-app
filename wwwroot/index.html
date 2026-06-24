@@ -10,8 +10,7 @@
   <meta name="description" content="مكتبة المياه — اكتشف أفضل الكتب في علوم المياه والبيئة والحضارة الإنسانية" />
   <title>مكتبة المياه</title>
 
-  <!-- Favicon: water drop only, no background -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 80'%3E%3Cdefs%3E%3ClinearGradient id='fg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300C8E8'/%3E%3Cstop offset='100%25' stop-color='%230077B6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 2C32 2 4 34 4 52C4 67.5 16.5 80 32 80C47.5 80 60 67.5 60 52C60 34 32 2 32 2Z' fill='url(%23fg)'/%3E%3Cpath d='M44 52C44 58.6 38.6 64 32 64' stroke='white' stroke-width='5' stroke-linecap='round' fill='none' opacity='0.5'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 80'%3E%3Cdefs%3E%3ClinearGradient id='fg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300C8E8'/%3E%3Cstop offset='100%25' stop-color='%230077B6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M32 2C32 2 4 34 4 52C4 67.5 16.5 80 32 80C47.5 80 60 67.5 60 52C60 34 32 2 32 2Z' fill='url(%23fg)'/%3E%3Cpath d='M44 52C44 58.6 38.6 64 32 64' stroke='white' stroke-width='5' stroke-linecap='round' fill='none' opacity='0.5'/%3E%3C/svg%3E" />
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23003B5C'/%3E%3Cdefs%3E%3ClinearGradient id='ag' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%2300C8E8'/%3E%3Cstop offset='100%25' stop-color='%230077B6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M90 15C90 15 28 87 28 127C28 156 56.6 180 90 180C123.4 180 152 156 152 127C152 87 90 15 90 15Z' fill='url(%23ag)'/%3E%3Cpath d='M122 127C122 143.6 107.7 157 90 157' stroke='white' stroke-width='12' stroke-linecap='round' fill='none' opacity='0.45'/%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,8 +19,7 @@
 </head>
 <body>
 
-  <!-- ===== شاشة الدخول ===== -->
-  <div id="loginOverlay" class="hidden">
+<div id="loginOverlay" class="hidden">
     <div class="login-card">
 
       <div class="login-logo-area">
@@ -44,8 +42,7 @@
         <button id="tabRegister" class="auth-tab" onclick="showAuthTab('register')" data-i18n="tab-register">إنشاء حساب</button>
       </div>
 
-      <!-- نموذج المستخدم -->
-      <div id="formUserAuth">
+<div id="formUserAuth">
         <div id="fieldEmail" class="field-auth hidden">
           <label data-i18n="lbl-email">البريد الإلكتروني (Gmail)</label>
           <input type="email" id="authEmail"
@@ -68,8 +65,7 @@
         </div>
       </div>
 
-      <!-- نموذج المدير (عبر ?admin في الرابط) -->
-      <div id="formAdmin" class="hidden">
+<div id="formAdmin" class="hidden">
         <div class="field-auth">
           <label data-i18n="lbl-admin-username">اسم مستخدم المدير</label>
           <input type="text" id="adminUsernameField" placeholder=""
@@ -93,16 +89,14 @@
     </div>
   </div>
 
-  <!-- ===== خلفية ===== -->
-  <div class="bg-layer">
+<div class="bg-layer">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
     <canvas id="waveCanvas"></canvas>
   </div>
 
-  <!-- ===== هيدر ===== -->
-  <header class="site-header">
+<header class="site-header">
     <div class="hdr">
 
       <div class="hdr-logo">
@@ -126,20 +120,17 @@
 
       <div id="headerCount" class="hdr-count">— كتاب</div>
 
-      <!-- زر تبديل اللغة -->
-      <button class="btn-lang-toggle" onclick="toggleLang()" id="langToggle" title="Switch language">
+<button class="btn-lang-toggle" onclick="toggleLang()" id="langToggle" title="Switch language">
         <span class="lang-pill" id="langOptAr">عربي</span>
         <span class="lang-pill" id="langOptEn">EN</span>
       </button>
 
-      <!-- للزوار -->
-      <div id="headerGuestBtns" class="hdr-guest">
+<div id="headerGuestBtns" class="hdr-guest">
         <button class="btn-register" onclick="showLoginOverlay('register')" data-i18n="tab-register">إنشاء حساب</button>
         <button class="btn-login-hdr" onclick="showLoginOverlay('login')" data-i18n="tab-login">تسجيل الدخول</button>
       </div>
 
-      <!-- للمستخدم المسجّل -->
-      <div id="headerUserArea" class="hdr-user hidden">
+<div id="headerUserArea" class="hdr-user hidden">
         <div class="hdr-badge">
           <span>👤</span>
           <span id="headerUsernameDisplay">مستخدم</span>
@@ -147,8 +138,7 @@
         <button class="btn-logout-hdr" onclick="logout()" data-i18n="btn-logout">خروج</button>
       </div>
 
-      <!-- للمدير -->
-      <div id="headerAdminArea" class="hdr-admin hidden">
+<div id="headerAdminArea" class="hdr-admin hidden">
         <div class="hdr-badge"><span>🔑</span><span id="adminNameDisplay">omar</span></div>
         <button class="btn-admin-panel" onclick="openAdminPanel()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
@@ -163,8 +153,7 @@
     </div>
   </header>
 
-  <!-- hero slider -->
-  <div id="heroSlider" class="hero-slider">
+<div id="heroSlider" class="hero-slider">
 
     <div class="hero-slide slide-1 active">
       <div class="hero-bg-deco"></div>
@@ -208,11 +197,9 @@
 
   </div>
 
-  <!-- ===== المحتوى ===== -->
-  <main class="site-main">
+<main class="site-main">
 
-    <!-- بحث ذكي -->
-    <section class="search-sec">
+<section class="search-sec">
       <div class="search-row">
         <div class="search-glow"></div>
         <input type="text" id="searchInput" class="search-field"
@@ -228,8 +215,7 @@
       <div id="predictions" class="hidden"></div>
     </section>
 
-    <!-- رد AI -->
-    <div id="aiBox" class="ai-box hidden">
+<div id="aiBox" class="ai-box hidden">
       <div class="ai-avatar">✦</div>
       <div style="flex:1">
         <div class="ai-label" data-i18n="ai-label">مساعد ذكي</div>
@@ -237,8 +223,7 @@
       </div>
     </div>
 
-    <!-- شريط الإجراءات -->
-    <div class="action-bar">
+<div class="action-bar">
       <div id="statsText" class="stats-chip" data-i18n="stats-loading">جارٍ التحميل...</div>
       <button class="admin-only btn-add-main hidden" onclick="toggleAddForm()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px">
@@ -248,8 +233,7 @@
       </button>
     </div>
 
-    <!-- نموذج الإضافة -->
-    <div id="addForm" class="add-card hidden">
+<div id="addForm" class="add-card hidden">
       <div class="add-card-header">
         <h3 class="add-card-title" data-i18n="add-form-title">✦ إضافة كتاب جديد</h3>
         <button class="btn-close-form" onclick="toggleAddForm()">✕</button>
@@ -281,11 +265,9 @@
       </div>
     </div>
 
-    <!-- شبكة الكتب -->
-    <div id="booksGrid"></div>
+<div id="booksGrid"></div>
 
-    <!-- لا نتائج -->
-    <div id="noResults" class="no-results hidden">
+<div id="noResults" class="no-results hidden">
       <div class="no-results-icon">◌</div>
       <p data-i18n="no-results-text">لا توجد نتائج مطابقة</p>
       <span data-i18n="no-results-hint">جرّب كلمة أخرى</span>
@@ -293,8 +275,7 @@
 
   </main>
 
-  <!-- ===== فوتر ===== -->
-  <footer class="site-footer">
+<footer class="site-footer">
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="footer-brand-icon">
@@ -326,8 +307,7 @@
     </div>
   </footer>
 
-  <!-- ===== مودال الحذف ===== -->
-  <div id="deleteModal" class="hidden">
+<div id="deleteModal" class="hidden">
     <div style="position:absolute;inset:0" onclick="closeModal()"></div>
     <div class="modal-box">
       <div style="font-size:2rem">🗑</div>
@@ -341,8 +321,7 @@
     </div>
   </div>
 
-  <!-- ===== شات بوت ===== -->
-  <div class="chatbot-widget hidden" id="chatbotWidget">
+<div class="chatbot-widget hidden" id="chatbotWidget">
     <button class="chatbot-btn" id="chatbotBtn" onclick="toggleChatbot()" aria-label="المساعد الذكي">
       <svg id="chatbotIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:24px;height:24px">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -381,15 +360,12 @@
     </div>
   </div>
 
-  <!-- Toast notifications -->
-  <div id="toastContainer"></div>
+<div id="toastContainer"></div>
 
-  <!-- ===== لوحة تحكم المدير ===== -->
-  <div id="adminPanel" class="admin-panel-overlay hidden">
+<div id="adminPanel" class="admin-panel-overlay hidden">
     <div class="admin-panel-box">
 
-      <!-- هيدر اللوحة -->
-      <div class="ap-header">
+<div class="ap-header">
         <div class="ap-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;color:#00C8E8">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -401,15 +377,13 @@
         <button class="ap-close" onclick="closeAdminPanel()">✕</button>
       </div>
 
-      <!-- تبويبات -->
-      <div class="ap-tabs">
+<div class="ap-tabs">
         <button class="ap-tab active" id="apTabStats"  onclick="switchApTab('stats')">📊 الإحصائيات</button>
         <button class="ap-tab"        id="apTabBooks"  onclick="switchApTab('books')">📚 الكتب</button>
         <button class="ap-tab"        id="apTabUsers"  onclick="switchApTab('users')">👥 المستخدمون</button>
       </div>
 
-      <!-- محتوى: الإحصائيات -->
-      <div class="ap-content" id="apContentStats">
+<div class="ap-content" id="apContentStats">
         <div class="ap-stats-grid">
           <div class="ap-stat-card">
             <div class="ap-stat-icon">📚</div>
@@ -434,8 +408,7 @@
         </div>
       </div>
 
-      <!-- محتوى: الكتب -->
-      <div class="ap-content hidden" id="apContentBooks">
+<div class="ap-content hidden" id="apContentBooks">
         <div class="ap-section-title">إضافة كتاب جديد</div>
         <div class="ap-add-form">
           <div class="ap-field-row">
@@ -476,8 +449,7 @@
         </div>
       </div>
 
-      <!-- محتوى: المستخدمون -->
-      <div class="ap-content hidden" id="apContentUsers">
+<div class="ap-content hidden" id="apContentUsers">
         <div class="ap-section-title">
           المستخدمون المسجّلون <span id="apUsersCount" class="ap-count-badge"></span>
           <button class="ap-btn-link" onclick="openUsersPage()" title="فتح في صفحة مستقلة">
