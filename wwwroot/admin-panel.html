@@ -53,7 +53,19 @@
     .b-fail{background:#4a1a1a;color:#e74c3c}
     .b-admin{background:#4a3a1a;color:#f39c12}
     .loading{text-align:center;padding:40px;color:#8899aa}
-    @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid{grid-template-columns:1fr}.sidebar{width:180px}}
+    .add-form{background:#0d1b2a;border-radius:10px;padding:20px;margin-bottom:20px;border:1px solid #1e3a5f}
+    .add-form h3{color:#38b6ff;margin-bottom:16px;font-size:15px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-grid.full{grid-template-columns:1fr}
+    .field label{display:block;font-size:12px;color:#8899aa;margin-bottom:5px}
+    .field input{width:100%;background:#112240;border:1px solid #1e3a5f;border-radius:6px;padding:8px 12px;color:#e0e6ef;font-family:inherit;font-size:13px}
+    .field input:focus{outline:none;border-color:#38b6ff}
+    .btn-add{background:#38b6ff;color:#0d1b2a;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-weight:700;font-size:13px;margin-top:4px}
+    .btn-add:hover{background:#2196e0}
+    .btn-del{background:#4a1a1a;color:#e74c3c;border:1px solid #e74c3c;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px}
+    .btn-del:hover{background:#e74c3c;color:#fff}
+    .toast-msg{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#27ae60;color:#fff;padding:10px 24px;border-radius:8px;font-size:14px;z-index:9999;display:none}
+    @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}.charts-grid{grid-template-columns:1fr}.sidebar{width:180px}.form-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -111,10 +123,23 @@
   <!-- إدارة الكتب -->
   <div class="section" id="sec-books">
     <div class="page-header"><div class="page-title">📚 إدارة الكتب</div></div>
+
+    <div class="add-form">
+      <h3>➕ إضافة كتاب جديد</h3>
+      <div class="form-grid">
+        <div class="field"><label>عنوان الكتاب *</label><input id="inTitle" placeholder="أدخل عنوان الكتاب"></div>
+        <div class="field"><label>المؤلف *</label><input id="inAuthor" placeholder="اسم المؤلف"></div>
+        <div class="field"><label>سنة النشر</label><input id="inYear" type="number" placeholder="مثال: 2020"></div>
+        <div class="field"><label>رابط PDF</label><input id="inPdf" placeholder="https://..."></div>
+      </div>
+      <button class="btn-add" onclick="addBook()">➕ إضافة الكتاب</button>
+      <span id="addMsg" style="margin-right:12px;font-size:13px;color:#27ae60;display:none"></span>
+    </div>
+
     <div class="table-card">
       <div class="loading" id="booksLoading">جارٍ التحميل...</div>
       <table class="tbl" id="booksTable" style="display:none">
-        <thead><tr><th>#</th><th>العنوان</th><th>المؤلف</th><th>السنة</th></tr></thead>
+        <thead><tr><th>#</th><th>العنوان</th><th>المؤلف</th><th>السنة</th><th>حذف</th></tr></thead>
         <tbody id="booksTbody"></tbody>
       </table>
     </div>
@@ -209,10 +234,55 @@
     const res = await fetch('/api/books');
     const books = await res.json();
     document.getElementById('booksTbody').innerHTML = books.map((b,i) =>
-      `<tr><td>${i+1}</td><td>${b.title}</td><td>${b.author}</td><td>${b.year||'—'}</td></tr>`
+      `<tr>
+        <td>${i+1}</td>
+        <td>${b.title}</td>
+        <td>${b.author}</td>
+        <td>${b.year||'—'}</td>
+        <td><button class="btn-del" onclick="deleteBook(${b.id},'${b.title.replace(/'/g,"\\'")}',this)">🗑 حذف</button></td>
+      </tr>`
     ).join('');
     document.getElementById('booksLoading').style.display = 'none';
     document.getElementById('booksTable').style.display   = 'table';
+  }
+
+  async function addBook() {
+    const title  = document.getElementById('inTitle').value.trim();
+    const author = document.getElementById('inAuthor').value.trim();
+    const year   = parseInt(document.getElementById('inYear').value) || 0;
+    const pdfUrl = document.getElementById('inPdf').value.trim() || null;
+    const msg    = document.getElementById('addMsg');
+
+    if (!title || !author) { msg.style.color='#e74c3c'; msg.textContent='العنوان والمؤلف مطلوبان'; msg.style.display='inline'; return; }
+
+    const res = await fetch('/api/books', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'X-Api-Key': token },
+      body: JSON.stringify({ title, author, year, pdfUrl })
+    });
+
+    if (res.ok) {
+      msg.style.color='#27ae60'; msg.textContent='✓ تمت الإضافة بنجاح';
+      document.getElementById('inTitle').value  = '';
+      document.getElementById('inAuthor').value = '';
+      document.getElementById('inYear').value   = '';
+      document.getElementById('inPdf').value    = '';
+      msg.style.display = 'inline';
+      setTimeout(() => msg.style.display='none', 3000);
+      loadBooks();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      msg.style.color='#e74c3c'; msg.textContent = err.title || 'حدث خطأ';
+      msg.style.display = 'inline';
+    }
+  }
+
+  async function deleteBook(id, title, btn) {
+    if (!confirm(`هل تريد حذف الكتاب؟\n"${title}"`)) return;
+    btn.disabled = true; btn.textContent = '...';
+    const res = await fetch(`/api/books/${id}`, { method:'DELETE', headers: H });
+    if (res.ok) { loadBooks(); }
+    else { btn.disabled=false; btn.textContent='🗑 حذف'; alert('فشل الحذف'); }
   }
 
   async function loadUsers() {
