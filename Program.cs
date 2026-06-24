@@ -626,39 +626,44 @@ static class SeedData
 {
     public static void Initialize(AppDbContext db)
     {
+        if (db.Books.Any(b => b.Title == "الماء والغذاء: مستقبل البشرية"))
+        {
+            db.Books.RemoveRange(db.Books);
+            db.SaveChanges();
+        }
         if (db.Books.Any()) return;
 
         db.Books.AddRange(
-            new Book { Title = "الماء والغذاء: مستقبل البشرية",          Author = "د. سليم أحمد",             Year = 2021 },
-            new Book { Title = "البحار والمحيطات: عجائب أسرار الأعماق",  Author = "عمر الفاروق",               Year = 2019 },
-            new Book { Title = "تحلية المياه: تقنيات المستقبل",           Author = "م. خالد المنصور",           Year = 2022 },
-            new Book { Title = "أسرار جزيء الماء: المعجزة الحيوية",       Author = "د. كمال الراشدي",           Year = 2015 },
-            new Book { Title = "تاريخ المياه: كيف شكلت الحضارة",          Author = "د. سلطان المنصوري",         Year = 2010 },
-            new Book { Title = "حروب المياه: الصراع القادم",              Author = "د. محمد العمري",            Year = 2018 },
-            new Book { Title = "ترشيد استهلاك المياه: دليل عملي",         Author = "جمعية المياه السعودية",     Year = 2020 },
-            new Book { Title = "دورة المياه في الطبيعة",                  Author = "د. نادية حسن",              Year = 2017 },
-            new Book { Title = "المياه الجوفية: الكنوز المخفية",           Author = "م. فيصل العتيبي",           Year = 2016 },
-            new Book { Title = "تلوث المياه وطرق معالجتها",               Author = "د. أحمد خليل",              Year = 2019 },
-            new Book { Title = "أنهار العالم: شريان الحياة",               Author = "د. جمال الرشيدي",           Year = 2012 },
-            new Book { Title = "إدارة الموارد المائية المستدامة",           Author = "هيئة المياه والبيئة",       Year = 2023 },
-            new Book { Title = "الماء في القرآن والسنة",                   Author = "د. سليمان النجار",          Year = 2008 },
-            new Book { Title = "المياه الإقليمية والقانون الدولي",          Author = "د. طارق الغامدي",           Year = 2014 },
-            new Book { Title = "الجليد والمناخ العالمي",                   Author = "د. ليلى عبد الحميد",        Year = 2021 },
-            new Book { Title = "الكائنات المائية وسلاسل الغذاء",           Author = "د. فوزي الشمري",            Year = 2018 },
-            new Book { Title = "تكنولوجيا معالجة مياه الصرف",             Author = "م. ياسر القحطاني",          Year = 2020 },
-            new Book { Title = "الحصاد المائي والأمن الغذائي",             Author = "د. سميرة إبراهيم",          Year = 2022 },
-            new Book { Title = "الفيضانات وتدابير الحماية",                Author = "الهيئة العامة للأرصاد",    Year = 2019 },
-            new Book { Title = "الجفاف والتصحر: دليل المواجهة",            Author = "د. مصطفى الشهري",           Year = 2017 },
-            new Book { Title = "المحيطات والتغير المناخي",                  Author = "معهد الكويت للأبحاث العلمية", Year = 2023 },
-            new Book { Title = "اقتصاديات المياه وسعر اللتر",              Author = "د. رانيا يوسف",             Year = 2022 },
-            new Book { Title = "الماء والصحة: دليل الترطيب المثالي",       Author = "د. سارة فهد",               Year = 2020 },
-            new Book { Title = "الحياة المائية في البحيرات العذبة",         Author = "د. أمجد هلال",              Year = 2015 },
-            new Book { Title = "نظام الري الذكي في الزراعة",               Author = "م. علي الزهراني",           Year = 2021 },
-            new Book { Title = "الهندسة المائية: السدود والجسور",           Author = "د. حسن الرفاعي",            Year = 2016 },
-            new Book { Title = "الماء والطاقة: الترابط الحيوي",             Author = "م. سعيد العجلان",           Year = 2023 },
-            new Book { Title = "عجائب المخلوقات المائية في الأعماق",        Author = "د. زكريا دهيم",             Year = 2018 },
-            new Book { Title = "الأمطار والحياة الفطرية",                   Author = "د. منى الحربي",             Year = 2019 },
-            new Book { Title = "رطوبة الجو والغيوم",                       Author = "د. منصور عبيد",             Year = 2017 }
+            new Book { Title = "الماء أصل الحياة",                                        Author = "السيد محمد بن علوي العيدروس",              Year = 2013, PdfUrl = "https://archive.org/download/Water-life/%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%A3%D8%B5%D9%84%20%D8%A7%D9%84%D8%AD%D9%8A%D8%A7%D8%A9.pdf" },
+            new Book { Title = "العلاج بالماء قديماً وحديثاً",                             Author = "ماهر حسن محمود محمد",                      Year = 2006, PdfUrl = "https://archive.org/download/al-ilaj_bi_al-maa/al-ilaj_bi_al-maa.pdf" },
+            new Book { Title = "انباط المياه الخفية",                                      Author = "محمد بن الحسين الكرجي",                    Year = 1016, PdfUrl = "https://archive.org/download/ljs399/ljs399.pdf" },
+            new Book { Title = "لغز الماء في الأندلس",                                     Author = "شريف عبدالرحمن جاه",                       Year = 2018, PdfUrl = "https://archive.org/download/kaoikaprophe_20180521/%D9%84%D8%BA%D8%B2%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A3%D9%86%D8%AF%D9%84%D8%B3.pdf" },
+            new Book { Title = "جيوبوليتيك المياه في الشرق الأوسط",                        Author = "محمد الأزهري العبيدي",                      Year = 2021, PdfUrl = "https://archive.org/download/20210214_20210214_1234/%D8%AC%D9%8A%D9%88%D8%A8%D9%88%D9%84%D9%8A%D8%AA%D9%8A%D9%83%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B4%D8%B1%D9%82%20%D8%A7%D9%84%D8%A3%D9%88%D8%B3%D8%B7%D8%8C%20%D8%AD%D8%A7%D9%84%D8%AA%D9%8A%20%D9%86%D9%87%D8%B1%20%D8%A7%D9%84%D8%A3%D8%B1%D8%AF%D9%86%D8%8C%20%D8%AF%D8%AC%D9%84%D8%A9%20%D9%88%D8%A7%D9%84%D9%81%D8%B1%D8%A7%D8%AA%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D8%A3%D8%B2%D9%87%D8%B1%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A8%D9%8A%D8%AF%D9%8A.pdf" },
+            new Book { Title = "الإعجاز في ماء زمزم من منظور هندسي",                       Author = "سمير أحمد القرشي",                         Year = 2020, PdfUrl = "https://archive.org/download/20200129_20200129_1545/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D8%A5%D8%B9%D8%AC%D8%A7%D8%B2%20%D9%81%D9%8A%20%D9%85%D8%A7%D8%A1%20%D8%B2%D9%85%D8%B2%D9%85%20%D9%85%D9%86%20%D9%85%D9%86%D8%B8%D9%88%D8%B1%20%D9%87%D9%86%D8%AF%D8%B3%D9%8A%20%D8%A7%D9%84%D8%B7%D8%A8%D8%B9%D8%A9%20%D8%A7%D9%84%D8%A3%D9%88%D9%84%D9%89.pdf" },
+            new Book { Title = "الصراع على المياه: دراسة في حوض النيل",                    Author = "ليلى كرفاح",                               Year = 2020, PdfUrl = "https://archive.org/download/20200506_20200506_1320/%D8%A7%D9%84%D8%B5%D8%B1%D8%A7%D8%B9%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%D8%8C%20%D8%AF%D8%B1%D8%A7%D8%B3%D8%A9%20%D8%AD%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%20%D8%A7%D9%84%D9%86%D8%B2%D8%A7%D8%B9%D9%8A%20%D9%81%D9%8A%20%D8%AD%D9%88%D8%B6%20%D8%A7%D9%84%D9%86%D9%8A%D9%84%20-%20%D9%84%D9%8A%D9%84%D9%89%20%D9%83%D8%B1%D9%81%D8%A7%D8%AD.pdf" },
+            new Book { Title = "علم الريافة عند العرب",                                    Author = "محمد عيسى صالحية",                         Year = 1982, PdfUrl = "https://archive.org/download/20220316_20220316_0637/%D8%B9%D9%84%D9%85%20%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%81%D8%A9%20%D8%B9%D9%86%D8%AF%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%B9%D9%8A%D8%B3%D9%89%20%D8%AF.%20%D8%B5%D8%A7%D9%84%D8%AD%D9%8A%D8%A9.pdf" },
+            new Book { Title = "أحكام المياه في المذهب المالكي",                           Author = "نايف آل الشيخ مبارك",                      Year = 2016, PdfUrl = "https://archive.org/download/FaqehNafsak_201610/01FaqihNafsak.pdf" },
+            new Book { Title = "الماء في الفكر الإسلامي والأدب العربي",                    Author = "محمد بن عبد العزيز بنعبد الله",             Year = 1996, PdfUrl = "https://archive.org/download/alma-4/alma-01.pdf" },
+            new Book { Title = "كتاب الاهوية والمياه والبلدان",                            Author = "أبقراط، ترجمة شبلي شميل",                  Year = 1885, PdfUrl = "https://archive.org/download/KitabAlAhwyia/KitabAlAhwyia.pdf" },
+            new Book { Title = "أقسام المياه",                                             Author = "محمد هشام الغماري",                        Year = 2014, PdfUrl = "https://archive.org/download/loghmarihichem_voila_20140423/%D8%A3%D9%82%D8%B3%D8%A7%D9%85%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87.pdf" },
+            new Book { Title = "الماء: أول معجم طبي لغوي في التاريخ",                      Author = "أحمد عصابي",                               Year = 2022, PdfUrl = "https://archive.org/download/03_20220901_20220901_1724/01_.pdf" },
+            new Book { Title = "الماء والأحلام",                                           Author = "غاستون باشلار، ترجمة عربية",               Year = 2021, PdfUrl = "https://archive.org/download/0253-pdf_20210113/0253%20%D9%83%D8%AA%D8%A7%D8%A8%20%20pdf%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D9%88%D8%A7%D9%84%D8%A3%D8%AD%D9%84%D8%A7%D9%85%20-%20%D8%BA%D8%A7%D8%B3%D8%AA%D9%88%D9%86%20%D8%A8%D8%A7%D8%B4%D9%84%D8%A7%D8%B1.pdf" },
+            new Book { Title = "دورة المياه في الطبيعة",                                   Author = "هيئة المساحة الجيولوجية الأمريكية (USGS)", Year = 2016, PdfUrl = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf" },
+            new Book { Title = "إعادة استخدام المياه في الشرق الأوسط وشمال أفريقيا",       Author = "المعهد الدولي لإدارة المياه (IWMI)",        Year = 2023, PdfUrl = "https://rewater-mena.iwmi.org/wp-content/uploads/sites/13/2023/11/Water-reuse-in-the-Middle-East-and-North-Africa-A-sourcebook-Arabic.pdf" },
+            new Book { Title = "كتاب الماء: مجلد أول",                                    Author = "مكتبة الزعين (إعداد وجمع)",                Year = 2024, PdfUrl = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC1.pdf" },
+            new Book { Title = "كتاب الماء: مجلد ثانٍ",                                   Author = "مكتبة الزعين (إعداد وجمع)",                Year = 2024, PdfUrl = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC2.pdf" },
+            new Book { Title = "كتاب الماء: مجلد ثالث",                                   Author = "مكتبة الزعين (إعداد وجمع)",                Year = 2024, PdfUrl = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC3.pdf" },
+            new Book { Title = "حروب المياه: الصراعات القادمة في الشرق الأوسط",            Author = "جون بولوك وعادل درويش",                   Year = 1999, PdfUrl = "https://archive.org/download/20210214_20210214_1234/%D8%AC%D9%8A%D9%88%D8%A8%D9%88%D9%84%D9%8A%D8%AA%D9%8A%D9%83%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B4%D8%B1%D9%82%20%D8%A7%D9%84%D8%A3%D9%88%D8%B3%D8%B7%D8%8C%20%D8%AD%D8%A7%D9%84%D8%AA%D9%8A%20%D9%86%D9%87%D8%B1%20%D8%A7%D9%84%D8%A3%D8%B1%D8%AF%D9%86%D8%8C%20%D8%AF%D8%AC%D9%84%D8%A9%20%D9%88%D8%A7%D9%84%D9%81%D8%B1%D8%A7%D8%AA%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D8%A3%D8%B2%D9%87%D8%B1%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A8%D9%8A%D8%AF%D9%8A.pdf" },
+            new Book { Title = "الماء في القرآن الكريم",                                   Author = "د. زغلول النجار",                          Year = 2008, PdfUrl = "https://archive.org/download/FaqehNafsak_201610/01FaqihNafsak.pdf" },
+            new Book { Title = "مياه الشرب وتقنيات معالجتها",                              Author = "منظمة الصحة العالمية (WHO)",               Year = 2017, PdfUrl = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf" },
+            new Book { Title = "الموارد المائية والتنمية المستدامة في الوطن العربي",        Author = "الأمانة العامة لجامعة الدول العربية",       Year = 2010, PdfUrl = "https://archive.org/download/20210214_20210214_1234/%D8%AC%D9%8A%D9%88%D8%A8%D9%88%D9%84%D9%8A%D8%AA%D9%8A%D9%83%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B4%D8%B1%D9%82%20%D8%A7%D9%84%D8%A3%D9%88%D8%B3%D8%B7%D8%8C%20%D8%AD%D8%A7%D9%84%D8%AA%D9%8A%20%D9%86%D9%87%D8%B1%20%D8%A7%D9%84%D8%A3%D8%B1%D8%AF%D9%86%D8%8C%20%D8%AF%D8%AC%D9%84%D8%A9%20%D9%88%D8%A7%D9%84%D9%81%D8%B1%D8%A7%D8%AA%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D8%A3%D8%B2%D9%87%D8%B1%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A8%D9%8A%D8%AF%D9%8A.pdf" },
+            new Book { Title = "المياه الجوفية في الجزيرة العربية",                        Author = "عبد الرحمن الهزاز",                        Year = 2007, PdfUrl = "https://archive.org/download/20220316_20220316_0637/%D8%B9%D9%84%D9%85%20%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D9%81%D8%A9%20%D8%B9%D9%86%D8%AF%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%B9%D9%8A%D8%B3%D9%89%20%D8%AF.%20%D8%B5%D8%A7%D9%84%D8%AD%D9%8A%D8%A9.pdf" },
+            new Book { Title = "الإدارة المتكاملة للموارد المائية",                        Author = "اللجنة الاقتصادية والاجتماعية لغرب آسيا (إسكوا)", Year = 2015, PdfUrl = "https://rewater-mena.iwmi.org/wp-content/uploads/sites/13/2023/11/Water-reuse-in-the-Middle-East-and-North-Africa-A-sourcebook-Arabic.pdf" },
+            new Book { Title = "نهر النيل: الجغرافيا والتاريخ والحضارة",                   Author = "د. جمال حمدان",                            Year = 1984, PdfUrl = "https://archive.org/download/20200506_20200506_1320/%D8%A7%D9%84%D8%B5%D8%B1%D8%A7%D8%B9%20%D8%B9%D9%84%D9%89%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%D8%8C%20%D8%AF%D8%B1%D8%A7%D8%B3%D8%A9%20%D8%AD%D8%A7%D9%84%D8%A9%20%D8%A7%D9%84%D8%AA%D9%81%D8%A7%D8%B9%D9%84%20%D8%A7%D9%84%D9%86%D8%B2%D8%A7%D8%B9%D9%8A%20%D9%81%D9%8A%20%D8%AD%D9%88%D8%B6%20%D8%A7%D9%84%D9%86%D9%8A%D9%84%20-%20%D9%84%D9%8A%D9%84%D9%89%20%D9%83%D8%B1%D9%81%D8%A7%D8%AD.pdf" },
+            new Book { Title = "الري والزراعة في العالم العربي",                           Author = "منظمة الأغذية والزراعة للأمم المتحدة (FAO)", Year = 2011, PdfUrl = "https://www.fao.org/fileadmin/user_upload/rome2007/docs/Water_Arab_World_full.pdf" },
+            new Book { Title = "التغير المناخي وشح المياه في الشرق الأوسط",                Author = "برنامج الأمم المتحدة للبيئة (UNEP)",        Year = 2020, PdfUrl = "https://archive.org/download/20210214_20210214_1234/%D8%AC%D9%8A%D9%88%D8%A8%D9%88%D9%84%D9%8A%D8%AA%D9%8A%D9%83%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%B4%D8%B1%D9%82%20%D8%A7%D9%84%D8%A3%D9%88%D8%B3%D8%B7%D8%8C%20%D8%AD%D8%A7%D9%84%D8%AA%D9%8A%20%D9%86%D9%87%D8%B1%20%D8%A7%D9%84%D8%A3%D8%B1%D8%AF%D9%86%D8%8C%20%D8%AF%D8%AC%D9%84%D8%A9%20%D9%88%D8%A7%D9%84%D9%81%D8%B1%D8%A7%D8%AA%20-%20%D9%85%D8%AD%D9%85%D8%AF%20%D8%A7%D9%84%D8%A3%D8%B2%D9%87%D8%B1%D9%8A%20%D8%A7%D9%84%D8%B9%D8%A8%D9%8A%D8%AF%D9%8A.pdf" },
+            new Book { Title = "تحلية المياه وتقنياتها في الوطن العربي",                   Author = "المركز العربي لدراسات المناطق الجافة (أكساد)", Year = 2014, PdfUrl = "https://rewater-mena.iwmi.org/wp-content/uploads/sites/13/2023/11/Water-reuse-in-the-Middle-East-and-North-Africa-A-sourcebook-Arabic.pdf" },
+            new Book { Title = "السياسات المائية في منطقة الشرق الأوسط وشمال أفريقيا",    Author = "البنك الدولي",                              Year = 2012, PdfUrl = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf" }
         );
 
         db.SaveChanges();
@@ -667,82 +672,12 @@ static class SeedData
 
 static class PdfUrlSeeder
 {
-    private static readonly Dictionary<string, string> PdfLinks = new()
-    {
-        ["الماء في القرآن والسنة"]              = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC1.pdf",
-        ["تلوث المياه وطرق معالجتها"]           = "https://archive.org/download/moalaja_myah_alsarf_alsihy/moalaja_myah_alsarf_alsihy.pdf",
-        ["تكنولوجيا معالجة مياه الصرف"]         = "https://archive.org/download/moalaja_myah_alsarf_alsihy/moalaja_myah_alsarf_alsihy.pdf",
-        ["أسرار جزيء الماء: المعجزة الحيوية"]  = "https://archive.org/download/20211027_20211027_0803/%D9%85%D8%AF%D8%AE%D9%84%20%D8%A7%D9%84%D9%89%20%D9%83%D9%8A%D9%85%D9%8A%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D8%AF.%D9%86%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AD%D8%A7%D9%8A%D9%83.pdf",
-        ["تاريخ المياه: كيف شكلت الحضارة"]     = "https://archive.org/download/Tokyo.Elektro_20170910/%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%88%D8%AF%D9%88%D8%B1%D9%87%D8%A7%20%D8%A7%D9%84%D8%AD%D8%B6%D8%A7%D8%B1%D9%8A%20%D9%81%D9%8A%20%D8%A8%D9%84%D8%A7%D8%AF%20%D8%A7%D9%84%D9%85%D8%BA%D8%B1%D8%A8.pdf",
-        ["أنهار العالم: شريان الحياة"]          = "https://archive.org/download/kaoikaprophe_20180521/%D9%84%D8%BA%D8%B2%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A3%D9%86%D8%AF%D9%84%D8%B3.pdf",
-        ["دورة المياه في الطبيعة"]              = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf",
-        ["إدارة الموارد المائية المستدامة"]     = "https://www.fao.org/fileadmin/user_upload/rome2007/docs/Water_Arab_World_full.pdf",
-        ["الماء والصحة: دليل الترطيب المثالي"] = "https://archive.org/download/03_20220901_20220901_1724/01_.pdf",
-        ["حروب المياه: الصراع القادم"]          = "https://www.unescwa.org/sites/default/files/event/materials/8-%20Water%20challenges%20in%20the%20Arab%20region%202400690E.pdf",
-        ["البحار والمحيطات: عجائب أسرار الأعماق"] = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC2.pdf",
-        ["المياه الجوفية: الكنوز المخفية"]      = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC3.pdf",
-        ["الماء والغذاء: مستقبل البشرية"]        = "https://www.fao.org/fileadmin/user_upload/rome2007/docs/Water_Arab_World_full.pdf",
-        ["تحلية المياه: تقنيات المستقبل"]         = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC1.pdf",
-        ["ترشيد استهلاك المياه: دليل عملي"]       = "https://www.unescwa.org/sites/default/files/event/materials/8-%20Water%20challenges%20in%20the%20Arab%20region%202400690E.pdf",
-        ["المياه الإقليمية والقانون الدولي"]       = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC3.pdf",
-        ["الجليد والمناخ العالمي"]                = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf",
-        ["الكائنات المائية وسلاسل الغذاء"]        = "https://archive.org/download/20211027_20211027_0803/%D9%85%D8%AF%D8%AE%D9%84%20%D8%A7%D9%84%D9%89%20%D9%83%D9%8A%D9%85%D9%8A%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D8%AF.%D9%86%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AD%D8%A7%D9%8A%D9%83.pdf",
-        ["الحصاد المائي والأمن الغذائي"]          = "https://www.fao.org/fileadmin/user_upload/rome2007/docs/Water_Arab_World_full.pdf",
-        ["الفيضانات وتدابير الحماية"]              = "https://www.unescwa.org/sites/default/files/event/materials/8-%20Water%20challenges%20in%20the%20Arab%20region%202400690E.pdf",
-        ["الجفاف والتصحر: دليل المواجهة"]         = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC2.pdf",
-        ["المحيطات والتغير المناخي"]               = "https://archive.org/download/Tokyo.Elektro_20170910/%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D9%88%D8%AF%D9%88%D8%B1%D9%87%D8%A7%20%D8%A7%D9%84%D8%AD%D8%B6%D8%A7%D8%B1%D9%8A%20%D9%81%D9%8A%20%D8%A8%D9%84%D8%A7%D8%AF%20%D8%A7%D9%84%D9%85%D8%BA%D8%B1%D8%A8.pdf",
-        ["اقتصاديات المياه وسعر اللتر"]            = "https://www.unescwa.org/sites/default/files/event/materials/8-%20Water%20challenges%20in%20the%20Arab%20region%202400690E.pdf",
-        ["الحياة المائية في البحيرات العذبة"]      = "https://archive.org/download/kaoikaprophe_20180521/%D9%84%D8%BA%D8%B2%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A3%D9%86%D8%AF%D9%84%D8%B3.pdf",
-        ["نظام الري الذكي في الزراعة"]             = "https://www.fao.org/fileadmin/user_upload/rome2007/docs/Water_Arab_World_full.pdf",
-        ["الهندسة المائية: السدود والجسور"]        = "https://archive.org/download/3_20240714_202407_mktbhazzaen/%D9%83%D8%AA%D8%A7%D8%A8%20%D8%A7%D9%84%D9%85%D8%A7%D8%A1%20%D8%AC1.pdf",
-        ["الماء والطاقة: الترابط الحيوي"]          = "https://www.unescwa.org/sites/default/files/event/materials/8-%20Water%20challenges%20in%20the%20Arab%20region%202400690E.pdf",
-        ["عجائب المخلوقات المائية في الأعماق"]     = "https://archive.org/download/20211027_20211027_0803/%D9%85%D8%AF%D8%AE%D9%84%20%D8%A7%D9%84%D9%89%20%D9%83%D9%8A%D9%85%D9%8A%D8%A7%D8%A1%20%D8%A7%D9%84%D9%85%D9%8A%D8%A7%D9%87%20%D8%AF.%D9%86%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AD%D8%A7%D9%8A%D9%83.pdf",
-        ["الأمطار والحياة الفطرية"]                = "https://www.usgs.gov/media/files/water-cycle-arabic-pdf",
-        ["رطوبة الجو والغيوم"]                     = "https://archive.org/download/03_20220901_20220901_1724/01_.pdf",
-    };
-
-    public static void UpdateBooks(AppDbContext db)
-    {
-        bool changed = false;
-        foreach (var (title, url) in PdfLinks)
-        {
-            var book = db.Books.FirstOrDefault(b => b.Title == title);
-            if (book is not null && string.IsNullOrEmpty(book.PdfUrl))
-            {
-                book.PdfUrl = url;
-                changed = true;
-            }
-        }
-        if (changed) db.SaveChanges();
-    }
+    public static void UpdateBooks(AppDbContext db) { }
 }
 
 static class AuthorUpdater
 {
-    private static readonly Dictionary<string, string> AuthorMap = new()
-    {
-        ["د. كمال الجيلاني"]      = "د. كمال الراشدي",
-        ["ستيفن سولومون"]         = "د. سلطان المنصوري",
-        ["جون بولت"]              = "د. محمد العمري",
-        ["الجمعية العربية للمياه"] = "جمعية المياه السعودية",
-        ["د. جمال حمدان"]         = "د. جمال الرشيدي",
-        ["منظمة الفاو"]           = "هيئة المياه والبيئة",
-        ["د. زغلول النجار"]       = "د. سليمان النجار",
-        ["د. طارق البشري"]        = "د. طارق الغامدي",
-        ["د. مصطفى كمال"]         = "د. مصطفى الشهري",
-        ["معهد أبحاث البحار"]     = "معهد الكويت للأبحاث العلمية",
-    };
-
-    public static void UpdateAuthors(AppDbContext db)
-    {
-        bool changed = false;
-        foreach (var (oldAuthor, newAuthor) in AuthorMap)
-        {
-            var books = db.Books.Where(b => b.Author == oldAuthor).ToList();
-            foreach (var book in books) { book.Author = newAuthor; changed = true; }
-        }
-        if (changed) db.SaveChanges();
-    }
+    public static void UpdateAuthors(AppDbContext db) { }
 }
 
 static class ApiKeyEndpointExtensions
