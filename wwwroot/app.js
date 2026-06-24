@@ -454,6 +454,7 @@ async function doAdminLogin() {
       updateAdminUI();
       renderBooks(allBooks);
       showToast(t('toast-admin'), '🔑');
+      setTimeout(() => openAdminPanel(), 300);
     } else if (res.status === 401) {
       showAuthError(t('err-server'));
     } else {
