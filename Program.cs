@@ -293,7 +293,7 @@ app.MapPost("/api/auth/user-login", async (LoginRequest req, AppDbContext db, Ht
 
 app.MapGet("/api/status", () => Results.Ok(new
 {
-    database    = usePostgres ? "Cloud SQL (PostgreSQL)" : "SQLite (Local)",
+    database    = usePostgres ? "Railway PostgreSQL" : "SQLite (Local)",
     environment = usePostgres ? "Cloud" : "Local",
     time        = DateTime.UtcNow.AddHours(3).ToString("yyyy-MM-dd HH:mm:ss")
 }));

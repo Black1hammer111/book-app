@@ -19,6 +19,36 @@ public class SmartSearchEngine
         ["اقتصاد"] = new[] { "اقتصاديات المياه وسعر اللتر", "حروب المياه: الصراع القادم" }
     };
 
+    private static readonly Dictionary<string, string> _englishToArabic = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["water"] = "ماء", ["waters"] = "مياه", ["sea"] = "بحر", ["seas"] = "بحار",
+        ["ocean"] = "محيط", ["oceans"] = "محيطات", ["river"] = "نهر", ["rivers"] = "أنهار",
+        ["rain"] = "مطر", ["ice"] = "جليد", ["snow"] = "ثلج", ["flood"] = "فيضان",
+        ["drought"] = "جفاف", ["pollution"] = "تلوث", ["treatment"] = "معالجة",
+        ["desalination"] = "تحلية", ["irrigation"] = "ري", ["agriculture"] = "زراعة",
+        ["health"] = "صحة", ["climate"] = "مناخ", ["environment"] = "بيئة",
+        ["history"] = "تاريخ", ["science"] = "علوم", ["technology"] = "تقنية",
+        ["economy"] = "اقتصاد", ["war"] = "حرب", ["wars"] = "حروب",
+        ["civilization"] = "حضارة", ["underground"] = "جوفية", ["future"] = "مستقبل",
+        ["smart"] = "ذكي", ["global"] = "عالمي", ["natural"] = "طبيعة",
+        ["molecule"] = "جزيء", ["secret"] = "أسرار", ["secrets"] = "أسرار",
+        ["author"] = "مؤلف", ["book"] = "كتاب", ["books"] = "كتب",
+        ["oldest"] = "أقدم", ["newest"] = "أحدث", ["all"] = "جميع",
+        ["count"] = "كم", ["how many"] = "كم", ["recommend"] = "أقترح",
+        ["category"] = "تصنيف", ["topic"] = "موضوع", ["about"] = "عن",
+        ["show"] = "اعرض", ["find"] = "بحث", ["search"] = "بحث",
+    };
+
+    private static string TranslateToArabic(string query)
+    {
+        var result = query;
+        foreach (var kv in _englishToArabic)
+            result = System.Text.RegularExpressions.Regex.Replace(
+                result, $@"\b{kv.Key}\b", kv.Value,
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        return result;
+    }
+
     private static readonly Dictionary<string, string[]> _intentKeywords = new()
     {
         ["author"] = new[] { "مؤلف", "كاتب", "كتّاب", "من كتب", "ألف", "لمن" },
@@ -126,7 +156,8 @@ public class SmartSearchEngine
             };
         }
 
-        var q = query.Trim().ToLower();
+        var translated = TranslateToArabic(query.Trim());
+        var q = translated.ToLower();
         var intent = DetectIntent(q);
         var predictions = PredictNextWords(query, books);
         List<Book> results;

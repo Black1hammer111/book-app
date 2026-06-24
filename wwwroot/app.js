@@ -88,7 +88,7 @@ const TRANSLATIONS = {
     'sb-free':            '✓ مجاني للأبد',
     'hs1-badge': 'مكتبة المياه', 'hs1-title': 'علم المياه في متناول يدك',
     'hs1-sub':   'اكتشف أفضل الكتب في علوم المياه والبيئة والحضارة الإنسانية',
-    'hs2-badge': 'مجاني 100%',   'hs2-title': '30 كتاباً مجانياً في انتظارك',
+    'hs2-badge': '',              'hs2-title': '30 كتاباً مجانياً في انتظارك',
     'hs2-sub':   'من تحلية المياه إلى إدارة الموارد — كل شيء مجاني بلا قيود أو رسوم',
     'hs3-badge': 'بحث ذكي',      'hs3-title': 'ابحث بطريقتك — النظام يفهمك',
     'hs3-sub':   'اكتب سؤالاً أو موضوعاً وسيجد لك النظام الكتاب المناسب تلقائياً',
@@ -166,7 +166,7 @@ const TRANSLATIONS = {
     'sb-free':            '✓ free forever',
     'hs1-badge': 'Water Library', 'hs1-title': 'Water Science at Your Fingertips',
     'hs1-sub':   'Discover the best books on water science, environment & civilization',
-    'hs2-badge': '100% Free',     'hs2-title': '30 Free Books Waiting for You',
+    'hs2-badge': '',              'hs2-title': '30 Free Books Waiting for You',
     'hs2-sub':   'From desalination to water resource management — all free, no limits',
     'hs3-badge': 'Smart Search',  'hs3-title': 'Search Your Way — We Understand You',
     'hs3-sub':   'Type a question or topic and the system will find the right book for you automatically',
@@ -305,7 +305,7 @@ function getUsername()  { return sessionStorage.getItem('username') || localStor
 
 function updateAdminUI() {
   const admin  = isAdmin();
-  const user   = !admin && !!sessionStorage.getItem('userToken');
+  const user   = !admin && !!localStorage.getItem('userToken');
 
   document.querySelectorAll('.admin-only').forEach(el =>
     el.classList.toggle('hidden', !admin)
