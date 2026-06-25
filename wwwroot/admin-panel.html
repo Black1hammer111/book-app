@@ -33,7 +33,7 @@
     .stat-icon{font-size:24px;margin-bottom:12px}
     .stat-value{font-size:36px;font-weight:700;color:#38b6ff;margin-bottom:6px}
     .stat-label{font-size:13px;color:#8899aa}
-    .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+    .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;align-items:start}
     .chart-card{background:#112240;border-radius:12px;padding:20px}
     .chart-title{font-size:15px;font-weight:600;color:#e0e6ef;margin-bottom:14px}
     .chart-legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
@@ -115,7 +115,7 @@
       </div>
       <div class="chart-card">
         <div class="chart-title">🔵 توزيع النشاط</div>
-        <div id="donutWrap" style="max-width:200px;margin:0 auto"><canvas id="donutChart"></canvas></div>
+        <div id="donutWrap" style="max-width:220px;margin:0 auto"><canvas id="donutChart"></canvas></div>
       </div>
     </div>
   </div>
@@ -224,7 +224,16 @@
           labels:['زيارات','دخول','تسجيل','فشل دخول','مدير'],
           datasets:[{ data: donutVals.every(v=>v===0) ? [1,0,0,0,0] : donutVals, backgroundColor:['#38b6ff','#27ae60','#9b59b6','#e74c3c','#f39c12'], borderWidth:0 }]
         },
-        options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#8899aa', font:{ size:10 }, padding:6 } } }, cutout:'60%' }
+        options:{
+          responsive:true,
+          plugins:{
+            legend:{
+              position:'bottom',
+              labels:{ color:'#c0d0e0', font:{ size:13, family:'Segoe UI' }, padding:12, boxWidth:14 }
+            }
+          },
+          cutout:'60%'
+        }
       });
     } catch(e) { console.error(e); }
   }
