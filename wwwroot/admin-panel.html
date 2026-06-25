@@ -115,7 +115,7 @@
       </div>
       <div class="chart-card">
         <div class="chart-title">🔵 توزيع النشاط</div>
-        <canvas id="donutChart" height="110"></canvas>
+        <div id="donutWrap"><canvas id="donutChart" height="150"></canvas></div>
       </div>
     </div>
   </div>
@@ -216,15 +216,26 @@
       });
 
       const b = d.breakdown;
+      const donutVals = [b.visits, b.logins, b.regs, b.fails, b.admins];
+      const donutCanvas = document.getElementById('donutChart');
+      const donutWrap   = document.getElementById('donutWrap');
       if (donutChart) donutChart.destroy();
-      donutChart = new Chart(document.getElementById('donutChart'), {
-        type: 'doughnut',
-        data: {
-          labels:['زيارات','دخول','تسجيل','فشل دخول','مدير'],
-          datasets:[{ data:[b.visits,b.logins,b.regs,b.fails,b.admins], backgroundColor:['#38b6ff','#27ae60','#9b59b6','#e74c3c','#f39c12'], borderWidth:0 }]
-        },
-        options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#8899aa', font:{ size:11 }, padding:8 } } }, cutout:'65%' }
-      });
+      if (donutVals.every(v => v === 0)) {
+        donutCanvas.style.display = 'none';
+        donutWrap.textContent = 'لا توجد بيانات بعد';
+        donutWrap.style.cssText = 'text-align:center;color:#8899aa;padding:40px 0;font-size:13px';
+      } else {
+        donutCanvas.style.display = '';
+        donutWrap.textContent = '';
+        donutChart = new Chart(donutCanvas, {
+          type: 'doughnut',
+          data: {
+            labels:['زيارات','دخول','تسجيل','فشل دخول','مدير'],
+            datasets:[{ data: donutVals, backgroundColor:['#38b6ff','#27ae60','#9b59b6','#e74c3c','#f39c12'], borderWidth:0 }]
+          },
+          options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#8899aa', font:{ size:11 }, padding:8 } } }, cutout:'65%' }
+        });
+      }
     } catch(e) { console.error(e); }
   }
 
