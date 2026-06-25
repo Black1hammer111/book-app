@@ -3,52 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>دخول المدير — مكتبة المياه</title>
+  <title>لوحة تحكم المدير — مكتبة المياه</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#0d1b2a;min-height:100vh;display:flex;align-items:center;justify-content:center}
-    .card{background:#fff;border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
-    .logo{text-align:center;margin-bottom:24px}
-    .logo-icon{width:60px;height:60px;background:linear-gradient(135deg,#38b6ff,#1a6fa0);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:10px}
-    .logo-text{font-size:22px;font-weight:700;color:#1a3a5c}
+    body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:linear-gradient(135deg,#0a1628 0%,#0d2040 50%,#0a1628 100%);min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{background:rgba(15,30,55,0.95);border:1px solid rgba(56,182,255,0.15);border-radius:18px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,0.5)}
+    .logo{text-align:center;margin-bottom:28px}
+    .logo-icon{width:64px;height:64px;background:linear-gradient(135deg,#1a3a5c,#0d2040);border:2px solid rgba(56,182,255,0.3);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:14px}
+    .logo-title{font-size:22px;font-weight:700;background:linear-gradient(135deg,#38b6ff,#1a9fd4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
+    .logo-sub{font-size:13px;color:#5a7a9a}
     .field{margin-bottom:18px}
-    .field label{display:block;font-size:13px;color:#5a6a7a;margin-bottom:6px;font-weight:500}
-    .field input{width:100%;border:1.5px solid #dde3ea;border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;color:#1a3a5c;transition:border-color 0.2s;direction:ltr;text-align:right}
-    .field input:focus{outline:none;border-color:#38b6ff}
-    .btn-login{width:100%;background:linear-gradient(135deg,#38b6ff,#1a6fa0);color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:opacity 0.2s}
-    .btn-login:hover{opacity:0.9}
-    .btn-login:disabled{opacity:0.6;cursor:not-allowed}
-    .error{background:#fff0f0;color:#c0392b;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:16px;display:none;border:1px solid #f5c6cb}
-    .back-link{text-align:center;margin-top:20px}
-    .back-link a{color:#8899aa;font-size:13px;text-decoration:none}
-    .back-link a:hover{color:#38b6ff}
+    .field label{display:block;font-size:13px;color:#8899aa;margin-bottom:7px;text-align:right}
+    .field input{width:100%;background:#f0f4f8;border:1.5px solid #dde3ea;border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;color:#1a3a5c;direction:ltr;text-align:right;transition:border-color 0.2s}
+    .field input:focus{outline:none;border-color:#38b6ff;background:#fff}
+    .btn-login{width:100%;background:linear-gradient(135deg,#1ab8d4,#0d9abf);color:#fff;border:none;border-radius:8px;padding:13px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;transition:opacity 0.2s;letter-spacing:1px}
+    .btn-login:hover{opacity:0.88}
+    .btn-login:disabled{opacity:0.55;cursor:not-allowed}
+    .error{background:rgba(192,57,43,0.15);color:#e74c3c;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;border:1px solid rgba(192,57,43,0.3)}
   </style>
 </head>
 <body>
   <div class="card">
     <div class="logo">
       <div class="logo-icon">💧</div>
-      <div class="logo-text">مكتبة المياه</div>
+      <div class="logo-title">لوحة تحكم المدير</div>
+      <div class="logo-sub">مكتبة المياه</div>
     </div>
 
     <div class="error" id="errMsg"></div>
 
     <div class="field">
-      <label>اسم مستخدم المدير</label>
-      <input type="text" id="username" placeholder="" autocomplete="off"
+      <label>اسم المستخدم</label>
+      <input type="text" id="username" autocomplete="off"
              onkeydown="if(event.key==='Enter') document.getElementById('password').focus()">
     </div>
     <div class="field">
-      <label>كلمة مرور المدير</label>
-      <input type="password" id="password" placeholder=""
+      <label>كلمة المرور</label>
+      <input type="password" id="password"
              onkeydown="if(event.key==='Enter') doLogin()">
     </div>
 
-    <button class="btn-login" id="loginBtn" onclick="doLogin()">دخول كمدير</button>
-
-    <div class="back-link">
-      <a href="/">← العودة للموقع</a>
-    </div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">دخول</button>
   </div>
 
   <script>
@@ -64,7 +59,7 @@
 
       if (!username || !password) { showErr('يرجى إدخال اسم المستخدم وكلمة المرور'); return; }
 
-      btn.disabled = true; btn.textContent = 'جارٍ الدخول...';
+      btn.disabled = true; btn.textContent = '...';
       err.style.display = 'none';
 
       try {
@@ -87,7 +82,7 @@
       } catch {
         showErr('تعذّر الاتصال بالخادم');
       } finally {
-        btn.disabled = false; btn.textContent = 'دخول كمدير';
+        btn.disabled = false; btn.textContent = 'دخول';
       }
     }
 
